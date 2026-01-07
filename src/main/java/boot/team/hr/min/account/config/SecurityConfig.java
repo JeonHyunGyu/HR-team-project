@@ -39,7 +39,6 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .defaultSuccessUrl("/main", true)
                 )
-                .formLogin(form -> form.disable())
                 // 로그아웃 설정
                 .logout(logout -> logout
                         .logoutUrl("/logout")
