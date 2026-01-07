@@ -26,11 +26,10 @@ public class SecurityConfig {
                     return corsConfig;
                 }))
                 .csrf(csrf -> csrf.disable())
-
-                // 회원가입 API는 인증 없이 접근 가능, 나머지는 인증 필요
+                
+                //일단 전부오픈
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/signup/**").permitAll()  // 회원가입 허용
-                        .anyRequest().authenticated()              // 그 외 요청은 인증 필요
+                        .anyRequest().permitAll()
                 )
 
                 // 로그인 설정
@@ -40,7 +39,7 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .defaultSuccessUrl("/main", true)
                 )
-
+                .formLogin(form -> form.disable())
                 // 로그아웃 설정
                 .logout(logout -> logout
                         .logoutUrl("/logout")
