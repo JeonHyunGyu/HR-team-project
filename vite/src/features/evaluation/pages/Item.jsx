@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { criteriaApi } from '../api/criteriaApi';
+import '../styles/Item.css';
 
 const Item = () => {
   const [criteriaList, setCriteriaList] = useState([]);
@@ -122,42 +123,42 @@ const Item = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h1 style={styles.title}>평가 항목 관리</h1>
-        <button style={styles.addButton} onClick={() => handleOpenModal()}>
+    <div className="eval-item-container">
+      <div className="eval-item-header">
+        <h1 className="eval-item-title">평가 항목 관리</h1>
+        <button className="eval-item-add-button" onClick={() => handleOpenModal()}>
           + 평가 항목 추가
         </button>
       </div>
 
-      <div style={styles.tableContainer}>
-        <table style={styles.table}>
+      <div className="eval-item-table-container">
+        <table className="eval-item-table">
           <thead>
             <tr>
-              <th style={styles.th}>평가 항목명</th>
-              <th style={styles.th}>가중치</th>
-              <th style={styles.th}>설명</th>
-              <th style={styles.th}>생성일시</th>
-              <th style={styles.th}>관리</th>
+              <th>평가 항목명</th>
+              <th>가중치</th>
+              <th>설명</th>
+              <th>생성일시</th>
+              <th>관리</th>
             </tr>
           </thead>
           <tbody>
             {criteriaList.length === 0 ? (
               <tr>
-                <td colSpan="5" style={styles.emptyMessage}>
+                <td colSpan="5" className="eval-item-empty-message">
                   등록된 평가 항목이 없습니다.
                 </td>
               </tr>
             ) : (
               criteriaList.map((criteria) => (
-                <tr key={criteria.criteriaId} style={styles.tr}>
-                  <td style={styles.td}>{criteria.criteriaName}</td>
-                  <td style={styles.td}>{criteria.weight}%</td>
-                  <td style={styles.td}>{criteria.description || '-'}</td>
-                  <td style={styles.td}>{formatDate(criteria.createdAt)}</td>
-                  <td style={styles.td}>
+                <tr key={criteria.criteriaId}>
+                  <td>{criteria.criteriaName}</td>
+                  <td>{criteria.weight}%</td>
+                  <td>{criteria.description || '-'}</td>
+                  <td>{formatDate(criteria.createdAt)}</td>
+                  <td>
                     <button
-                      style={styles.editButton}
+                      className="eval-item-edit-button"
                       onClick={() => handleOpenModal(criteria)}
                     >
                       수정
@@ -171,68 +172,68 @@ const Item = () => {
       </div>
 
       {isModalOpen && (
-        <div style={styles.modalOverlay} onClick={handleCloseModal}>
-          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <h2 style={styles.modalTitle}>
+        <div className="eval-item-modal-overlay" onClick={handleCloseModal}>
+          <div className="eval-item-modal" onClick={(e) => e.stopPropagation()}>
+            <h2 className="eval-item-modal-title">
               {editingCriteria ? '평가 항목 수정' : '평가 항목 추가'}
             </h2>
-            <form onSubmit={handleSubmit} style={styles.form}>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>평가 항목명 *</label>
+            <form onSubmit={handleSubmit} className="eval-item-form">
+              <div className="eval-item-form-group">
+                <label className="eval-item-label">평가 항목명 *</label>
                 <input
                   type="text"
                   name="criteriaName"
                   value={formData.criteriaName}
                   onChange={handleInputChange}
-                  style={styles.input}
+                  className="eval-item-input"
                   maxLength="50"
                   required
                 />
               </div>
 
-              <div style={styles.formGroup}>
-                <label style={styles.label}>가중치 *</label>
+              <div className="eval-item-form-group">
+                <label className="eval-item-label">가중치 *</label>
                 <input
                   type="number"
                   name="weight"
                   value={formData.weight}
                   onChange={handleInputChange}
-                  style={styles.input}
+                  className="eval-item-input"
                   min="1"
                   max="999"
                   required
                 />
               </div>
 
-              <div style={styles.formGroup}>
-                <label style={styles.label}>설명</label>
+              <div className="eval-item-form-group">
+                <label className="eval-item-label">설명</label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  style={styles.textarea}
+                  className="eval-item-textarea"
                   maxLength="255"
                   rows="4"
                 />
               </div>
 
-              <div style={styles.buttonGroup}>
+              <div className="eval-item-button-group">
                 {editingCriteria && (
                   <button
                     type="button"
-                    style={styles.deleteButtonInModal}
+                    className="eval-item-delete-button"
                     onClick={() => handleDelete(editingCriteria.criteriaId)}
                   >
                     삭제
                   </button>
                 )}
-                <div style={styles.rightButtons}>
-                  <button type="submit" style={styles.submitButton}>
+                <div className="eval-item-right-buttons">
+                  <button type="submit" className="eval-item-submit-button">
                     {editingCriteria ? '수정' : '추가'}
                   </button>
                   <button
                     type="button"
-                    style={styles.cancelButton}
+                    className="eval-item-cancel-button"
                     onClick={handleCloseModal}
                   >
                     취소
@@ -245,180 +246,6 @@ const Item = () => {
       )}
     </div>
   );
-};
-
-const styles = {
-  container: {
-    padding: '20px',
-    maxWidth: '1200px',
-    margin: '0 auto'
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '20px'
-  },
-  title: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    margin: 0
-  },
-  addButton: {
-    padding: '10px 20px',
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold'
-  },
-  tableContainer: {
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    overflow: 'hidden'
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse'
-  },
-  th: {
-    backgroundColor: '#f5f5f5',
-    padding: '12px',
-    textAlign: 'left',
-    fontWeight: 'bold',
-    borderBottom: '2px solid #ddd'
-  },
-  tr: {
-    borderBottom: '1px solid #eee'
-  },
-  td: {
-    padding: '12px',
-    textAlign: 'left'
-  },
-  emptyMessage: {
-    padding: '40px',
-    textAlign: 'center',
-    color: '#999'
-  },
-  editButton: {
-    padding: '6px 12px',
-    backgroundColor: '#2196F3',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    marginRight: '8px',
-    fontSize: '12px'
-  },
-  deleteButton: {
-    padding: '6px 12px',
-    backgroundColor: '#f44336',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '12px'
-  },
-  modalOverlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000
-  },
-  modal: {
-    backgroundColor: 'white',
-    padding: '30px',
-    borderRadius: '8px',
-    width: '500px',
-    maxWidth: '90%',
-    maxHeight: '90vh',
-    overflow: 'auto'
-  },
-  modalTitle: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-    marginTop: 0
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  formGroup: {
-    marginBottom: '20px'
-  },
-  label: {
-    display: 'block',
-    marginBottom: '8px',
-    fontWeight: 'bold',
-    fontSize: '14px'
-  },
-  input: {
-    width: '100%',
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    fontSize: '14px',
-    boxSizing: 'border-box'
-  },
-  textarea: {
-    width: '100%',
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    fontSize: '14px',
-    resize: 'vertical',
-    boxSizing: 'border-box'
-  },
-  buttonGroup: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: '20px'
-  },
-  rightButtons: {
-    display: 'flex',
-    gap: '10px'
-  },
-  deleteButtonInModal: {
-    padding: '10px 20px',
-    backgroundColor: '#f44336',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold'
-  },
-  submitButton: {
-    padding: '10px 20px',
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold'
-  },
-  cancelButton: {
-    padding: '10px 20px',
-    backgroundColor: '#999',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold'
-  }
 };
 
 export default Item;
