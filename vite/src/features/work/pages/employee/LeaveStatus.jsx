@@ -1,7 +1,7 @@
 const LeaveStatus = () => {
     return(
         <>
-            <h1>LeaveStatus</h1>
+            <h1>Leave-Status</h1>
         </>
     )
 }

@@ -7,6 +7,7 @@ import React, { useState } from "react";
 const Home = () => {
     const [openHr, setOpenHr] = useState(false);
     const [openWork, setOpenWork] = useState(false);
+    const [openSalary, setOpenSalary] = useState(false);
     const [openSchedule, setOpenSchedule] = useState(false);
     const [openApproval, setOpenApproval] = useState(false);
     const [openEval, setOpenEval] = useState(false);
@@ -64,20 +65,37 @@ const Home = () => {
                             <Collapse in={openWork}>
                                 <div>
                                     <Nav className="flex-column ms-3">
-                                        <Nav.Link as={Link} to="/main/work/attendance">출퇴근 기록</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/work/request">휴가(연가) 신청</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/work/status">휴가 신청 현황</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/work/usage">연차 사용 현황</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/work/policy">근태 정책 조회</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/employee/attendance">출퇴근 기록</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/employee/request">휴가(연가) 신청</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/employee/status">휴가 신청 현황</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/employee/usage">연차 사용 현황</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/employee/workpolicy">근태 정책 조회</Nav.Link>
 
-                                        <Nav.Link as={Link} to="/main/work/admin-attandance">출퇴근 내역 관리</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/work/admin-policy">근태 정책 관리</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/work/leave-approval">휴가 신청 승인</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/work/annual-promotion">연차 촉진 관리</Nav.Link>
+                                        {/*<Nav.Link as={Link} to="/main/work/admin-attandance">출퇴근 내역 관리</Nav.Link>*/}
+                                        {/*<Nav.Link as={Link} to="/main/work/admin-policy">근태 정책 관리</Nav.Link>*/}
+                                        {/*<Nav.Link as={Link} to="/main/work/leave-approval">휴가 신청 승인</Nav.Link>*/}
+                                        {/*<Nav.Link as={Link} to="/main/work/annual-promotion">연차 촉진 관리</Nav.Link>*/}
                                         <Nav.Link as={Link} to="/main/work/admin/attendance">출퇴근 내역 관리</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/work/admin/policy">근태 정책 관리</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/admin/adminworkpolicy">근태 정책 관리</Nav.Link>
                                         <Nav.Link as={Link} to="/main/work/admin/leaveapproval">휴가 신청 승인</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/work/admin/annualpromotion">연차 촉진 관리</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/admin/annualleave">연차 촉진 관리</Nav.Link>
+                                    </Nav>
+                                </div>
+                            </Collapse>
+
+                            {/* 급여 */}
+                            <Nav.Link onClick={() => setOpenSalary(!openSalary)}>
+                                급여 {openSalary ? "▾" : "▸"}
+                            </Nav.Link>
+                            <Collapse in={openSalary}>
+                                <div>
+                                    <Nav className="flex-column ms-3">
+                                        <Nav.Link as={Link} to="/main/work/employee/salary">급여 조회</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/employee/oballowance">외근 수당 조회</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/employee/salarypolicy">급여 정책 조회</Nav.Link>
+
+                                        <Nav.Link as={Link} to="/main/work/employee/adminsalary">급여 관리</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/employee/adminsalarypolicy">급여 정책 관리</Nav.Link>
                                     </Nav>
                                 </div>
                             </Collapse>
