@@ -1,17 +1,22 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/home.css";
 import { Container, Row, Col, Nav, Navbar, Collapse } from "react-bootstrap";
-import { Link, Outlet } from "react-router-dom";
+import {Link, Outlet, useNavigate} from "react-router-dom";
 import React, { useState } from "react";
+
 const Home = () => {
-    const [openOrg, setOpenOrg] = useState(false);
     const [openHr, setOpenHr] = useState(false);
     const [openWork, setOpenWork] = useState(false);
     const [openSchedule, setOpenSchedule] = useState(false);
-    const [openPay, setOpenPay] = useState(false);
     const [openApproval, setOpenApproval] = useState(false);
-    const [openNotice, setOpenNotice] = useState(false);
+    const [openEval, setOpenEval] = useState(false);
+    const [openReward, setOpenReward] = useState(false);
+    const navigate = useNavigate();
 
+    const handleLogout = async () => {
+        await fetch("/back/logout", { method: "POST", credentials: "include" });
+        navigate("/"); // 로그아웃 후 로그인 페이지 이동
+    };
 
     return (
         <div className="admin-page">
@@ -23,7 +28,7 @@ const Home = () => {
                     </Navbar.Brand>
                     <Nav className="ms-auto">
                         <Nav.Link>settings</Nav.Link>
-                        <Nav.Link as={Link} to="/">logout</Nav.Link>
+                        <Nav.Link onClick={handleLogout} style={{ cursor: "pointer" }}>Logout</Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>
@@ -37,20 +42,6 @@ const Home = () => {
                             {/* 홈 */}
                             <Nav.Link as={Link} to="/main">홈</Nav.Link>
 
-                            {/* 조직 */}
-                            <Nav.Link onClick={() => setOpenOrg(!openOrg)}>
-                                조직 {openOrg ? "▾" : "▸"}
-                            </Nav.Link>
-                            <Collapse in={openOrg}>
-                                <div>
-                                    <Nav className="flex-column ms-3">
-                                        <Nav.Link as={Link} to="/main/org/chart">조직도</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/org/department">부서관리</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/org/position">직급관리</Nav.Link>
-                                    </Nav>
-                                </div>
-                            </Collapse>
-
                             {/* 인사 */}
                             <Nav.Link onClick={() => setOpenHr(!openHr)}>
                                 인사 {openHr ? "▾" : "▸"}
@@ -58,9 +49,10 @@ const Home = () => {
                             <Collapse in={openHr}>
                                 <div>
                                     <Nav className="flex-column ms-3">
-                                        <Nav.Link as={Link} to="/main/hr/employee">사원관리</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/hr/invite">사원초대</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/hr/evaluation">인사평가</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/hr/all">전체</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/hr/dept">부서</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/hr/emp">사원</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/hr/dispatch">파견</Nav.Link>
                                     </Nav>
                                 </div>
                             </Collapse>
@@ -72,12 +64,19 @@ const Home = () => {
                             <Collapse in={openWork}>
                                 <div>
                                     <Nav className="flex-column ms-3">
-                                        <Nav.Link as={Link} to="/main/work/attendance">출퇴근</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/work/leave">휴가관리</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/work/overtime">초과근무</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/attendance">출퇴근 기록</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/request">휴가(연가) 신청</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/status">휴가 신청 현황</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/usage">연차 사용 현황</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/policy">근태 정책 조회</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/admin/attendance">출퇴근 내역 관리</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/admin/policy">근태 정책 관리</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/admin/leaveapproval">휴가 신청 승인</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/work/admin/annualpromotion">연차 촉진 관리</Nav.Link>
                                     </Nav>
                                 </div>
                             </Collapse>
+
                             {/* 일정 */}
                             <Nav.Link onClick={() => setOpenSchedule(!openSchedule)}>
                                 일정 {openSchedule ? "▾" : "▸"}
@@ -86,22 +85,38 @@ const Home = () => {
                                 <div>
                                     <Nav className="flex-column ms-3">
                                         <Nav.Link as={Link} to="/main/schedule/calendar">캘린더</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/schedule/my">내 일정</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/schedule/team">팀 일정</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/schedule/project">프로젝트 생성</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/schedule/admin/projectmanage">프로젝트 관리</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/schedule/meeting">회의실</Nav.Link>
                                     </Nav>
                                 </div>
                             </Collapse>
 
-                            {/* 보상 */}
-                            <Nav.Link onClick={() => setOpenPay(!openPay)}>
-                                보상 {openPay ? "▾" : "▸"}
+                            {/* 평가 (Eval) */}
+                            <Nav.Link onClick={() => setOpenEval(!openEval)}>
+                                평가 {openEval ? "▾" : "▸"}
                             </Nav.Link>
-                            <Collapse in={openPay}>
+                            <Collapse in={openEval}>
                                 <div>
                                     <Nav className="flex-column ms-3">
-                                        <Nav.Link as={Link} to="/main/pay/salary">급여</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/pay/bonus">상여</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/pay/tax">세금</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/eval/admin/item">평가 항목 관리</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/eval/admin/input">사원 평가 입력</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/eval/view">평가 조회</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/eval/admin/recommend">사원 추천</Nav.Link>
+                                    </Nav>
+                                </div>
+                            </Collapse>
+
+                            {/* 포상 (Reward) */}
+                            <Nav.Link onClick={() => setOpenReward(!openReward)}>
+                                포상 {openReward ? "▾" : "▸"}
+                            </Nav.Link>
+                            <Collapse in={openReward}>
+                                <div>
+                                    <Nav className="flex-column ms-3">
+                                        <Nav.Link as={Link} to="/main/reward/admin/policy">포상 정책 관리</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/reward/admin/candidate">포상 후보 추천</Nav.Link>
+                                        <Nav.Link as={Link} to="/main/reward/history">포상 이력</Nav.Link>
                                     </Nav>
                                 </div>
                             </Collapse>
@@ -120,19 +135,6 @@ const Home = () => {
                                 </div>
                             </Collapse>
 
-                            {/* 공지사항 */}
-                            <Nav.Link onClick={() => setOpenNotice(!openNotice)}>
-                                공지사항 {openNotice ? "▾" : "▸"}
-                            </Nav.Link>
-                            <Collapse in={openNotice}>
-                                <div>
-                                    <Nav className="flex-column ms-3">
-                                        <Nav.Link as={Link} to="/main/notice/list">공지목록</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/notice/create">공지작성</Nav.Link>
-                                        <Nav.Link as={Link} to="/main/notice/archive">보관함</Nav.Link>
-                                    </Nav>
-                                </div>
-                            </Collapse>
                         </Nav>
                     </Col>
 
