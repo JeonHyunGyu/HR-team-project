@@ -1,4 +1,4 @@
-package boot.team.hr.hyun.entity;
+package boot.team.hr.hyun.emp.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,7 +16,7 @@ public class Emp {
     private Long id;
 
     @Column(name = "emp_id") // DB 컬럼명은 emp_id
-    private Integer empId;    // Java 필드명은 empId
+    private String empId;    // Java 필드명은 empId
 
     @Column(name = "emp_name")
     private String empName;
@@ -28,6 +28,7 @@ public class Emp {
     private String email;
 
     private String role;
+    private Integer managerId;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

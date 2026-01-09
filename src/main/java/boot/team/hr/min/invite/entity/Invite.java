@@ -8,6 +8,12 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(
+        name = "INVITE",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email")
+        }
+)
 @NoArgsConstructor
 @Getter
 @Setter
@@ -15,12 +21,19 @@ public class Invite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name="emp_id")
+
+    @Column(name="emp_id",nullable = false, length = 30)
     private String empId;
+
+    @Column(nullable = false, length = 255, unique = true)
     private String email;
+
+    @Column(nullable = false, length = 20)
     private String status;
-    @Column(name="created_at")
+
+    @Column(name="created_at",nullable = false)
     private LocalDateTime createdAt;
+
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
