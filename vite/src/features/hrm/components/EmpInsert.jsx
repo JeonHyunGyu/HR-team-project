@@ -8,7 +8,7 @@ const EmpInsert = () => {
         empName: "",
         deptId: "",
         email: "",
-        role: ""
+        empRole: ""
     });
 
     const handleChange = (e) => {
@@ -24,7 +24,10 @@ const EmpInsert = () => {
 
         try {
             // Spring Boot의 @RequestBody가 이 JSON 객체를 EmpDto로 변환합니다.
-            const res = await axios.post("/back/hyun/emp/insert", form);
+            const res = await axios.post("/back/hyun/emp/insert", {
+                data : form,
+                withCredentials: true
+            });
             console.log("등록 성공 :", res.data);
             alert("사원 등록이 완료되었습니다.");
         } catch(e) {
@@ -49,7 +52,7 @@ const EmpInsert = () => {
                             <input
                                 id="empId"
                                 name="empId" // DTO 필드명과 일치
-                                type="number"
+                                type="text"
                                 value={form.empId} // state 키값과 일치
                                 onChange={handleChange}
                             />
@@ -102,21 +105,37 @@ const EmpInsert = () => {
 
                     <tr>
                         <th>
-                            <label htmlFor="role">직급</label>
+                            <label htmlFor="empRole">직급</label>
                         </th>
                         <td>
-                            <input
-                                id="role"
-                                name="role"
-                                value={form.role}
+                            <select
+                                id="empRole"
+                                name="empRole"
+                                value={form.empRole}
                                 onChange={handleChange}
-                            />
+                            >
+                                <option value="">선택하세요</option>
+
+                                {/* CEO */}
+                                <option value="CEO">CEO</option>
+
+                                {/* 담당관 */}
+                                <option value="HR">담당관 - 인사</option>
+                                <option value="ATTENDANCE">담당관 - 근태</option>
+                                <option value="SCHEDULE">담당관 - 일정</option>
+                                <option value="EVAL">담당관 - 평가</option>
+                                <option value="REWARD">담당관 - 포상</option>
+
+                                {/* 팀장 */}
+                                <option value="LEADER">팀장</option>
+
+                                {/* 사원 */}
+                                <option value="EMP">사원</option>
+                            </select>
                         </td>
                     </tr>
-
                     </tbody>
                 </table>
-
                 <button type="submit">사원 등록</button>
             </form>
         </div>

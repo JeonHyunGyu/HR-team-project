@@ -47,7 +47,7 @@ const EmpDelete = () => {
                             <input
                                 id="empId"
                                 name="empId" // DTO 필드명과 일치
-                                type="number"
+                                type="text"
                                 value={form.empId} // state 키값과 일치
                                 onChange={handleChange}
                             />

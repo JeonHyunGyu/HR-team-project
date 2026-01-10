@@ -28,7 +28,7 @@ public class EmpService {
             dto.setEmpName(emp.getEmpName());
             dto.setDeptId(String.valueOf(emp.getDeptId()));
             dto.setEmail(emp.getEmail());
-            dto.setRole(emp.getRole());
+            dto.setEmpRole(emp.getEmpRole());
 
             // 날짜 변환 (null 체크 추가)
             if (emp.getCreatedAt() != null) {
@@ -39,9 +39,7 @@ public class EmpService {
             }
 
             dtos.add(dto);
-        }
-        dtos.sort(Comparator.comparingInt(o -> Integer.parseInt(o.getEmpId()))
-        );
+        };
         return dtos;
     }
 
@@ -53,8 +51,8 @@ public class EmpService {
         emp.setEmpName(empDto.getEmpName());
         emp.setDeptId(Integer.valueOf(empDto.getDeptId()));
         emp.setEmail(empDto.getEmail());
-        emp.setRole(empDto.getRole());
-
+        emp.setEmpRole(empDto.getEmpRole());
+        emp.getManagerId();
         // 생성 시간 및 수정 시간 설정
         emp.setCreatedAt(LocalDateTime.now());
         emp.setUpdatedAt(LocalDateTime.now());
@@ -68,9 +66,9 @@ public class EmpService {
 
         emp.setEmpId(empDto.getEmpId());
         emp.setEmpName(empDto.getEmpName());
-        emp.setDeptId(Integer.valueOf(empDto.getDeptId()));
+        emp.setDeptId(empDto.getDeptId());
         emp.setEmail(empDto.getEmail());
-        emp.setRole(empDto.getRole());
+        emp.setEmpRole(empDto.getEmpRole());
         emp.setUpdatedAt(LocalDateTime.now());
 
         empRepository.save(emp);

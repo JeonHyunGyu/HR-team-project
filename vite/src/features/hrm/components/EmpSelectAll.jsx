@@ -37,12 +37,12 @@ const EmpSelectAll = () => {
                         <tbody>
                         {empList.map((emp) => (
                             // key값과 필드명들을 DTO 이름과 동일하게 수정
-                            <tr key={emp.empId}>
+                            <tr key={emp.id}>
                                 <td>{emp.empId}</td>
                                 <td>{emp.deptId}</td>
                                 <td>{emp.empName}</td>
                                 <td>{emp.email}<button>초대</button></td>
-                                <td>{emp.role}</td>
+                                <td>{emp.empRole}</td>
                                 <td>{emp.createdAt}</td>
                                 <td>{emp.updatedAt}</td>
                             </tr>
