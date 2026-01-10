@@ -3,6 +3,7 @@ import "../styles/home.css";
 import { Container, Row, Col, Nav, Navbar, Collapse } from "react-bootstrap";
 import {Link, Outlet, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
+import {useAuth} from "./AuthContext.jsx";
 
 const Home = () => {
     const [openInvite,setOpenInvite]=useState(false);
@@ -41,9 +42,9 @@ const Home = () => {
 
                             {/* 홈 */}
                             <Nav.Link as={Link} to="/main">홈</Nav.Link>
-                            
+
                             {/*초대*/}
-                            
+
                             <Nav.Link onClick={() => setOpenInvite(!openInvite)}>
                                 초대 {openInvite ? "▾" : "▸"}
                             </Nav.Link>
