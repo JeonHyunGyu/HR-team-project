@@ -28,7 +28,7 @@ public class DeptController {
     }
     @DeleteMapping("/delete")
     public void deleteEmpById(@RequestBody DeptDto deptDto){
-        deptService.deleteDept(Integer.valueOf(deptDto.getDeptId()));
+        deptService.deleteDept(deptDto.getDeptId());
     }
 
 
