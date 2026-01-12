@@ -63,7 +63,7 @@ public class EmpService {
     }
 
     public void updateEmp(EmpDto empDto){
-        Emp emp = empRepository.findByEmpId(empDto.getEmpId())
+        Emp emp = empRepository.findById(empDto.getEmpId())
                 .orElseThrow(()-> new RuntimeException("해당 사원 없음"));
 
         emp.setEmpId(empDto.getEmpId());
@@ -78,7 +78,7 @@ public class EmpService {
 
     @Transactional
     public void deleteEmp(String empId){
-        empRepository.deleteEmpByEmpId(empId);
+        empRepository.deleteById(empId);
     }
 
 }

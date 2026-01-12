@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface EmpRepository extends JpaRepository<Emp,Long> {
-    void deleteEmpByEmpId(String empId);
-    Optional<Emp> findByEmpId(String empId);
+public interface EmpRepository extends JpaRepository<Emp,String> {
+    //void deleteEmpByEmpId(String empId);
+    //Optional<Emp> findByEmpId(String empId);
     Optional<Emp> findByEmail(String email);
 }

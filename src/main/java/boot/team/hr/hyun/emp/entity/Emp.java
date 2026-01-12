@@ -12,11 +12,8 @@ import java.time.LocalDateTime;
 @Setter
 public class Emp {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "emp_id") // DB 컬럼명은 emp_id
-    private String empId;    // Java 필드명은 empId
+    @Column(name = "emp_id")
+    private String empId;
 
     @Column(name = "emp_name")
     private String empName;

@@ -3,6 +3,7 @@ import "../styles/home.css";
 import { Container, Row, Col, Nav, Navbar, Collapse } from "react-bootstrap";
 import {Link, Outlet, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
+//import {useAuth} from "./AuthContext";
 
 
 const Home = () => {
@@ -14,6 +15,10 @@ const Home = () => {
     const [openEval, setOpenEval] = useState(false);
     const [openReward, setOpenReward] = useState(false);
     const navigate = useNavigate();
+
+    //const {user}=useAuth();
+    //console.log(user);
+
 
     const handleLogout = async () => {
         await fetch("/back/logout", { method: "POST", credentials: "include" });

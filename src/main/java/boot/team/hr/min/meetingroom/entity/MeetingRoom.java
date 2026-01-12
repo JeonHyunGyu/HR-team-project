@@ -1,5 +1,6 @@
 package boot.team.hr.min.meetingroom.entity;
 
+import boot.team.hr.min.meetingroom.dto.MeetingRoomDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -32,5 +33,20 @@ public class MeetingRoom {
         this.name = name;
         this.location = location;
         this.capacity = capacity;
+    }
+
+    // DTO → Entity
+    public static MeetingRoom from(MeetingRoomDto dto) {
+        return new MeetingRoom(
+                dto.getMeetingRoomId(),
+                dto.getName(),
+                dto.getLocation(),
+                dto.getCapacity()
+        );
+    }
+    public void update(MeetingRoomDto dto) {
+        this.name = dto.getName();
+        this.location = dto.getLocation();
+        this.capacity = dto.getCapacity();
     }
 }
