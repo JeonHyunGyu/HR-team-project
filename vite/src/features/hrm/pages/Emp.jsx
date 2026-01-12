@@ -1,8 +1,8 @@
-import EmpSelectAll from "../components/EmpSelectAll.jsx";
+import EmpSelectAll from "../components/emp/EmpSelectAll.jsx";
 import {useState} from "react";
-import EmpInsert from "../components/EmpInsert.jsx";
-import EmpUpdate from "../components/EmpUpdate.jsx";
-import EmpDelete from "../components/EmpDelete.jsx";
+import EmpInsert from "../components/emp/EmpInsert.jsx";
+import EmpUpdate from "../components/emp/EmpUpdate.jsx";
+import EmpDelete from "../components/emp/EmpDelete.jsx";
 
 const Emp = () => {
     const [page, setPage] = useState("empSelectAll");

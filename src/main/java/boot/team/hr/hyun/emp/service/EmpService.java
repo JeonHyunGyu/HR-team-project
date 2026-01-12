@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -35,7 +34,7 @@ public class EmpService {
 
 //            dto.setDeptId(String.valueOf(emp.getDeptId()));
             if(emp.getDept() != null) { // 부서 배정이 안된 사원이면, NullPointerException 발생
-                dto.setDeptId(emp.getDept().getDeptId());
+                dto.setDeptNo(emp.getDept().getDeptNo());
             }
 
             // 날짜 변환 (null 체크 추가)
@@ -62,13 +61,14 @@ public class EmpService {
 //        emp.getManagerId();
 
 //        emp.setDeptId(Integer.valueOf(empDto.getDeptId()));
-        if(empDto.getDeptId() != null) { // deptId 로 조회해서 Dept 객체 가져오기
-            Dept dept = deptRepository.findByDeptId(empDto.getDeptId())
-                    .orElseThrow(()-> new  RuntimeException("해당 사원의 부서가 없습니다. 혹은 아직 등록되지 않았습니다.")
+        if(empDto.getDeptNo() != null) { // deptId 로 조회해서 Dept 객체 가져오기
+            Dept dept = deptRepository.findById(empDto.getDeptNo())
+                    .orElseThrow(()-> new RuntimeException("해당 사원의 부서가 없습니다. 혹은 아직 등록되지 않았습니다.")
             );
 
             emp.setDept(dept); // 하지만 dept 변수에는 해당 부서번호의 부서 정보 전체가 들어오지만, DB에는 엔티티를 보고 dept_id만 저장된다.
         }
+
         // 생성 시간 및 수정 시간 설정
         emp.setCreatedAt(LocalDateTime.now());
         emp.setUpdatedAt(LocalDateTime.now());
@@ -77,7 +77,7 @@ public class EmpService {
     }
 
     public void updateEmp(EmpDto empDto){
-        Emp emp = empRepository.findByEmpId(empDto.getEmpId())
+        Emp emp = empRepository.findById(empDto.getEmpId())
                 .orElseThrow(()-> new RuntimeException("해당 사원 없음"));
 
         emp.setEmpId(empDto.getEmpId());
@@ -86,8 +86,8 @@ public class EmpService {
         emp.setEmpRole(empDto.getEmpRole());
 
         //        emp.setDeptId(empDto.getDeptId());
-        if(empDto.getDeptId() != null) {
-            Dept dept = deptRepository.findByDeptId(empDto.getDeptId())
+        if(empDto.getDeptNo() != null) {
+            Dept dept = deptRepository.findById(empDto.getDeptNo())
                     .orElseThrow(()-> new RuntimeException("해당 사원의 부서 번호가 없습니다. 혹은 아직 등록되지 않았습니다."));
 
             emp.setDept(dept);
@@ -99,7 +99,7 @@ public class EmpService {
 
     @Transactional
     public void deleteEmp(String empId){
-        empRepository.deleteEmpByEmpId(empId);
+        empRepository.deleteById(empId);
     }
 
 }

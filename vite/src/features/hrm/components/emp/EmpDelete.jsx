@@ -55,7 +55,7 @@ const EmpDelete = () => {
                     </tr>
                     </tbody>
                 </table>
-                <button type="submit">사원 삭제</button>
+                <button type="submit">제출</button>
             </form>
         </div>
     );

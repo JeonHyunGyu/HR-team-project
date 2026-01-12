@@ -6,7 +6,7 @@ const EmpInsert = () => {
     const [form, setForm] = useState({
         empId: "",    // 카멜케이스로 통일
         empName: "",
-        deptId: "",
+        deptNo: "",
         email: "",
         empRole: ""
     });
@@ -75,14 +75,14 @@ const EmpInsert = () => {
 
                     <tr>
                         <th>
-                            <label htmlFor="deptId">부서번호</label>
+                            <label htmlFor="deptNo">부서번호</label>
                         </th>
                         <td>
                             <input
-                                id="deptId"
-                                name="deptId" // DTO 필드명과 일치
+                                id="deptNo"
+                                name="deptNo" // DTO 필드명과 일치
                                 type="number"
-                                value={form.deptId}
+                                value={form.deptNo}
                                 onChange={handleChange}
                             />
                         </td>
@@ -136,7 +136,7 @@ const EmpInsert = () => {
                     </tr>
                     </tbody>
                 </table>
-                <button type="submit">사원 등록</button>
+                <button type="submit">제출</button>
             </form>
         </div>
     );

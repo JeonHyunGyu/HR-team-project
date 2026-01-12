@@ -11,9 +11,11 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class EmpDto {
-    private String empId;   // React의 empId와 매핑 ( A3003 이런식으로 문자열 형식 )
-    private String empName; // React의 empName과 매핑
-    private Integer deptId;  // 외래키, Dept 테이블의 deptId 컬럼과 매핑
+    private String empId;   // 사원번호
+    private String empName; // 사원 이름
+
+    private Integer deptNo;  // 외래키, Dept 테이블의 deptNo 컬럼과 매핑
+
     private String email;
     private String empRole;
 

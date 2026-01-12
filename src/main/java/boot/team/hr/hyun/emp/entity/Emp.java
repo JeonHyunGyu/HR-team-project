@@ -13,11 +13,8 @@ import java.time.LocalDateTime;
 @Setter
 public class Emp {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "emp_id") // DB 컬럼명은 emp_id
-    private String empId;    // Java 필드명은 empId
+    private String empId;    // Java 필드명은 empId a1001
 
     @Column(name = "emp_name")
     private String empName;
@@ -32,8 +29,8 @@ public class Emp {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "dept_id",
-            referencedColumnName = "id"
+            name = "dept_no",
+            referencedColumnName = "dept_no"
     )
     private Dept dept;
 

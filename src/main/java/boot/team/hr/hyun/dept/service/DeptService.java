@@ -5,6 +5,7 @@ import boot.team.hr.hyun.dept.entity.Dept;
 import boot.team.hr.hyun.dept.repo.DeptRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,12 +21,17 @@ public class DeptService {
         List<DeptDto> deptArr = new ArrayList<>() ;
         for(Dept dept : depts){
             DeptDto deptDto = new DeptDto();
-            deptDto.setDeptId(dept.getDeptId());
+            deptDto.setDeptNo(dept.getDeptNo());
             deptDto.setDeptName(dept.getDeptName());
             deptDto.setDeptLoc(dept.getDeptLoc());
-            deptDto.setParentDeptId(dept.getParentDeptId());
-            deptDto.setFloor(dept.getFloor());
-            deptDto.setOrderNo(dept.getOrderNo());
+            if(dept.getParent() != null){
+                deptDto.setParentDeptNo(dept.getParent().getDeptNo());
+            }else {
+                deptDto.setParentDeptNo(null);
+            }
+            deptDto.setTreeLevel(dept.getTreeLevel());
+            deptDto.setSiblingOrder(dept.getSiblingOrder());
+
             deptDto.setCreatedAt(dept.getCreatedAt());
             deptDto.setUpdatedAt(dept.getUpdatedAt());
             deptArr.add(deptDto);
@@ -34,27 +40,51 @@ public class DeptService {
     }
     public void insertDept(DeptDto deptDto){
         Dept dept = new Dept();
-        dept.setDeptId(deptDto.getDeptId());
+        dept.setDeptNo(deptDto.getDeptNo());
         dept.setDeptName(deptDto.getDeptName());
         dept.setDeptLoc(deptDto.getDeptLoc());
-        dept.setParentDeptId(deptDto.getParentDeptId());
-        dept.setFloor(deptDto.getFloor());
-        dept.setOrderNo(deptDto.getOrderNo());
+//        dept.setParentDeptId(deptDto.getParentDeptId());
+        if(deptDto.getParentDeptNo() != null){
+            Dept parentDept = deptRepository.findById(deptDto.getParentDeptNo())
+                    .orElseThrow(()-> new RuntimeException("해당 부서가 없습니다."));
+
+            dept.setParent(parentDept);
+            dept.setTreeLevel(parentDept.getTreeLevel() + 1);
+        }else{
+            dept.setParent(null);
+            dept.setTreeLevel(0);
+        }
+//        dept.setTreeLevel(deptDto.getTreeLevel());
+
+        dept.setSiblingOrder(deptDto.getSiblingOrder());
         dept.setCreatedAt(LocalDateTime.now());
         dept.setUpdatedAt(LocalDateTime.now());
         deptRepository.save(dept);
     }
     public void updateDept(DeptDto deptDto){
-        Dept dept = deptRepository.findByDeptId(deptDto.getDeptId())
+        Dept dept = deptRepository.findById(deptDto.getDeptNo())
                 .orElseThrow(()-> new RuntimeException("해당 부서 없음"));
         dept.setDeptName(deptDto.getDeptName());
         dept.setDeptLoc(deptDto.getDeptLoc());
-        dept.setParentDeptId(deptDto.getParentDeptId());
-        dept.setFloor(deptDto.getFloor());
-        dept.setOrderNo(deptDto.getOrderNo());
+//        dept.setParentDeptId(deptDto.getParentDeptId());
+
+        if(deptDto.getParentDeptNo() != null){
+            Dept parentDept = deptRepository.findById(deptDto.getParentDeptNo())
+                    .orElseThrow(()-> new RuntimeException("해당 부서가 없습니다."));
+
+            dept.setParent(parentDept);
+            dept.setTreeLevel(parentDept.getTreeLevel() + 1);
+        }else{
+            dept.setParent(null);
+            dept.setTreeLevel(0);
+        }
+//        dept.setTreeLevel(deptDto.getTreeLevel());
+
+        dept.setSiblingOrder(deptDto.getSiblingOrder());
         dept.setUpdatedAt(LocalDateTime.now());
     }
+    @Transactional
     public void deleteDept(Integer deptId){
-        deptRepository.deleteDeptByDeptId(deptId);
+        deptRepository.deleteById(deptId);
     }
 }

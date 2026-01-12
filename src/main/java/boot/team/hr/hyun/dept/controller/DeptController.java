@@ -2,7 +2,6 @@ package boot.team.hr.hyun.dept.controller;
 
 import boot.team.hr.hyun.dept.dto.DeptDto;
 import boot.team.hr.hyun.dept.service.DeptService;
-import boot.team.hr.hyun.emp.dto.EmpDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,16 +18,16 @@ public class DeptController {
         return deptService.selectAll();
     }
     @PostMapping("/insert")
-    public void insertEmp(@RequestBody DeptDto deptDto){
+    public void insertDept(@RequestBody DeptDto deptDto){
         deptService.insertDept(deptDto);
     }
     @PutMapping("/update")
-    public void updateEmp(@RequestBody DeptDto deptDto){
+    public void updateDept(@RequestBody DeptDto deptDto){
         deptService.updateDept(deptDto);
     }
     @DeleteMapping("/delete")
-    public void deleteEmpById(@RequestBody DeptDto deptDto){
-        deptService.deleteDept(deptDto.getDeptId());
+    public void deleteDeptById(@RequestBody DeptDto deptDto){
+        deptService.deleteDept(deptDto.getDeptNo());
     }
 
 

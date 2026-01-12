@@ -11,12 +11,14 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class DeptDto {
-    private Integer deptId;
+    private Integer deptNo;
     private String deptName;
     private String deptLoc;
-    private Integer parentDeptId;
-    private Integer floor;
-    private Integer orderNo;
+
+    private Integer parentDeptNo;
+    private Integer treeLevel;
+    private Integer siblingOrder;
+
     @JsonFormat(pattern = "yy년 MM월 dd일 HH시 mm분 ss초", locale = "ko")
     private LocalDateTime createdAt;
     @JsonFormat(pattern = "yy년 MM월 dd일 HH시 mm분 ss초", locale = "ko")
