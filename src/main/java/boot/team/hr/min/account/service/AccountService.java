@@ -3,6 +3,7 @@ package boot.team.hr.min.account.service;
 import boot.team.hr.min.account.repository.AccountRepository;
 import boot.team.hr.min.account.dto.AccountDTO;
 import boot.team.hr.min.account.entity.Account;
+import boot.team.hr.min.invite.service.InviteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final InviteService inviteService;
     private final PasswordEncoder passwordEncoder;
     @Transactional
     public Long adminSignUp(AccountDTO request) {
@@ -45,6 +47,8 @@ public class AccountService {
                 .role("EMP")         // 사원은 EMP
                 .status("ACTIVE")    // 바로 활성화
                 .build();
+
+        inviteService.completeInviteByEmail(request.getEmail());
 
         return accountRepository.save(emp).getId();
     }

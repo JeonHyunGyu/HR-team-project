@@ -15,6 +15,23 @@ const EmpSelectAll = () => {
             console.log("조회 실패 : ", e);
         }
     };
+    const handleInvite = async (emp) => {
+        try {
+            const res = await axios.post(
+                "/back/invite/create",
+                {
+                    empId: emp.empId,
+                    email: emp.email,
+                },
+                { withCredentials: true }
+            );
+
+            alert("초대 완료! inviteId = " + res.data);
+        } catch (e) {
+            console.log("초대 실패", e);
+            alert("이미 초대된 사원일 수 있습니다.");
+        }
+    };
 
     return (
         <div>
@@ -43,6 +60,14 @@ const EmpSelectAll = () => {
                                 <td>{emp.empName}</td>
                                 <td>{emp.email}<button>초대</button></td>
                                 <td>{emp.empRole}</td>
+                                <td>{emp.email} <button
+                                    type="button"
+                                    onClick={() => handleInvite(emp)}
+                                    style={{ marginLeft: "8px" }}
+                                >
+                                    초대
+                                </button></td>
+                                <td>{emp.role}</td>
                                 <td>{emp.createdAt}</td>
                                 <td>{emp.updatedAt}</td>
                             </tr>

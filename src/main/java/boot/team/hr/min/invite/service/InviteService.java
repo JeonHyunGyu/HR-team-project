@@ -6,6 +6,7 @@ import boot.team.hr.min.invite.repository.InviteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,25 +17,23 @@ import java.util.stream.Collectors;
 public class InviteService {
 
     private final InviteRepository inviteRepository;
-
+    private final MailService mailService;
     /**
      * 초대 생성
      */
     public Long createInvite(InviteDto dto) {
 
-        boolean exists = inviteRepository.existsByEmailAndStatus(
-                dto.getEmail(), "PENDING"
-        );
-        if (exists) {
-            throw new IllegalStateException("이미 초대가 존재합니다.");
-        }
-
-        Invite invite = new Invite(
-                dto.getEmpId(),
-                dto.getEmail()
-        );
-
+        // 1. invite 테이블 저장
+        Invite invite = new Invite(dto.getEmpId(), dto.getEmail());
         Invite saved = inviteRepository.save(invite);
+
+        // 2. 초대 링크 생성 (일단 localhost OK)
+        String inviteLink =
+                "http://localhost:5173/empsign?email=" + dto.getEmail();
+
+        // 3. 메일 발송
+        mailService.sendInviteMail(dto.getEmail(), inviteLink);
+
         return saved.getId();
     }
 
@@ -93,5 +92,14 @@ public class InviteService {
         dto.setCreatedAt(invite.getCreatedAt());
         dto.setCompletedAt(invite.getCompletedAt());
         return dto;
+    }
+
+    @Transactional
+    public void completeInviteByEmail(String email) {
+        inviteRepository.findByEmailAndStatus(email, "PENDING")
+                .ifPresent(invite -> {
+                    invite.complete();  // status = COMPLETED, completedAt = now()
+                    inviteRepository.save(invite);
+                });
     }
 }

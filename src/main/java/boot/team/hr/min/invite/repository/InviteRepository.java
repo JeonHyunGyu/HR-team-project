@@ -8,13 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface InviteRepository extends JpaRepository<Invite,Long> {
-    boolean existsByEmail(String email);
-
-    Optional<Invite> findByEmail(String email);
 
     Optional<Invite> findByEmailAndStatus(String email, String status);
 
-    void deleteByEmail(String email);
-
-    boolean existsByEmailAndStatus(String email, String pending);
 }
