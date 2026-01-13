@@ -4,7 +4,7 @@ import { Container, Row, Col, Nav, Navbar, Collapse } from "react-bootstrap";
 import {Link, Outlet, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 //import {useAuth} from "./AuthContext";
-
+import { useAuth } from "./AuthContext.jsx";
 
 const Home = () => {
     const [openInvite,setOpenInvite]=useState(false);
@@ -16,14 +16,18 @@ const Home = () => {
     const [openReward, setOpenReward] = useState(false);
     const navigate = useNavigate();
 
-    //const {user}=useAuth();
-    //console.log(user);
+    const { logout } = useAuth();
 
 
     const handleLogout = async () => {
-        await fetch("/back/logout", { method: "POST", credentials: "include" });
-        navigate("/"); // 로그아웃 후 로그인 페이지 이동
+        try {
+            await logout(); // context에 정의된 logout 사용
+            navigate("/"); // 로그아웃 후 로그인 페이지 이동
+        } catch (err) {
+            console.error("로그아웃 실패", err);
+        }
     };
+
     return (
         <div className="admin-page">
             {/* 상단 Navbar */}

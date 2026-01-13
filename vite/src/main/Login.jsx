@@ -1,30 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Container, Card, Button, Form } from "react-bootstrap";
 import "./styles/login.css";
+import { useAuth } from "./AuthContext.jsx";
 
 const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { login } = useAuth();
 
     const handleLogin = async () => {
         try {
-            const params = new URLSearchParams();
-            params.append("email", email);
-            params.append("password", password);
-
-            await axios.post("/back/login", params, {
-                withCredentials: true,//세션쿠키 포함
-                headers: { "Content-Type": "application/x-www-form-urlencoded" }
-            });
-
-            alert("로그인 성공");
+            await login(email, password); // Context의 login 사용
             navigate("/main");
+            alert("로그인 성공")
         } catch (err) {
-            console.log(err);
-            alert("로그인 실패: " + (err.response?.status || err.message));
+            console.error(err);
+            alert("로그인 실패");
         }
     };
 
