@@ -8,7 +8,7 @@ const EmpUpdate = () => {
         empName: "",
         deptId: "",
         email: "",
-        role: ""
+        empRole: ""
     });
 
     const handleChange = (e) => {
@@ -101,13 +101,13 @@ const EmpUpdate = () => {
 
                     <tr>
                         <th>
-                            <label htmlFor="role">직급</label>
+                            <label htmlFor="empRole">직급</label>
                         </th>
                         <td>
                             <input
-                                id="role"
-                                name="role"
-                                value={form.role}
+                                id="empRole"
+                                name="empRole"
+                                value={form.empRole}
                                 onChange={handleChange}
                             />
                         </td>

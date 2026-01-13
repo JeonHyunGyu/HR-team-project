@@ -15,7 +15,7 @@ public class EmpDto {
     private String empName; // React의 empName과 매핑
     private String deptId;  // React의 deptId와 매핑
     private String email;
-    private String role;
+    private String empRole;
     @JsonFormat(pattern = "yy년 MM월 dd일 HH시 mm분 ss초",locale = "ko")
     private LocalDateTime createdAt;
     @JsonFormat(pattern = "yy년 MM월 dd일 HH시 mm분 ss초",locale = "ko")

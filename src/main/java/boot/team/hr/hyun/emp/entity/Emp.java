@@ -25,7 +25,11 @@ public class Emp {
     private Integer deptId;
 
     private String email;
-    private String role; // CEO, Manager, TeamLeader, Employee ( CEO -> 담당관 -> 팀장 -> 사원)
+
+    @Column(name = "emp_role")
+    private String empRole; // CEO, Manager, TeamLeader, Employee ( CEO -> 담당관 -> 팀장 -> 사원)
+
+    @Column(name = "manager_id")
     private Integer managerId; // 직속상관 ( 사수 )
 
     @Column(name = "created_at")

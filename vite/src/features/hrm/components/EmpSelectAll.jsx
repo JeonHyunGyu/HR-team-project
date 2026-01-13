@@ -42,7 +42,7 @@ const EmpSelectAll = () => {
                                 <td>{emp.deptId}</td>
                                 <td>{emp.empName}</td>
                                 <td>{emp.email}<button>초대</button></td>
-                                <td>{emp.role}</td>
+                                <td>{emp.empRole}</td>
                                 <td>{emp.createdAt}</td>
                                 <td>{emp.updatedAt}</td>
                             </tr>

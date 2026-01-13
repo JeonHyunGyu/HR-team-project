@@ -11,5 +11,5 @@ public class EvaluationTargetDTO {
     private String empId;
     private String empName;
     private Integer deptId;
-    private String position;
+    private String empRole;
 }

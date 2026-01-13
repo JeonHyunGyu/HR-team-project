@@ -27,9 +27,33 @@ export const inputApi = {
     return response.data;
   },
 
+  // 내가 입력한 평가 목록 조회
+  getMyInputEvaluations: async () => {
+    const response = await axios.get(`${API_BASE_URL}/my-inputs`, {
+      withCredentials: true,
+    });
+    return response.data;
+  },
+
+  // 평가 상세 조회 (수정용)
+  getEvaluationForEdit: async (evaluationId) => {
+    const response = await axios.get(`${API_BASE_URL}/${evaluationId}`, {
+      withCredentials: true,
+    });
+    return response.data;
+  },
+
   // 평가 수정
   updateEvaluation: async (evaluationId, evaluationData) => {
     const response = await axios.put(`${API_BASE_URL}/${evaluationId}`, evaluationData, {
+      withCredentials: true,
+    });
+    return response.data;
+  },
+
+  // 평가 삭제
+  deleteEvaluation: async (evaluationId) => {
+    const response = await axios.delete(`${API_BASE_URL}/${evaluationId}`, {
       withCredentials: true,
     });
     return response.data;

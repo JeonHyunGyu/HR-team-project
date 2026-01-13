@@ -40,7 +40,7 @@ public class EvaluationInputService {
                 .empName(emp.getEmpName())
                 .deptId(emp.getDeptId())
                 .email(emp.getEmail())
-                .position(emp.getPosition())
+                .empRole(emp.getEmpRole())
                 .build();
     }
 
@@ -53,17 +53,17 @@ public class EvaluationInputService {
 
         List<Emp> targets = new ArrayList<>();
 
-        if ("CEO".equals(currentUser.getPosition())) {
+        if ("CEO".equals(currentUser.getEmpRole())) {
             // CEO는 LEADER 목록 조회
             targets = empRepository.findAll().stream()
-                    .filter(emp -> "LEADER".equals(emp.getPosition()))
+                    .filter(emp -> "LEADER".equals(emp.getEmpRole()))
                     .collect(Collectors.toList());
-        } else if ("LEADER".equals(currentUser.getPosition())) {
+        } else if ("LEADER".equals(currentUser.getEmpRole())) {
             // LEADER는 같은 부서의 EMP 목록 조회
             targets = empRepository.findAll().stream()
                     .filter(emp -> emp.getDeptId() != null
                             && emp.getDeptId().equals(currentUser.getDeptId())
-                            && "EMP".equals(emp.getPosition()))
+                            && "EMP".equals(emp.getEmpRole()))
                     .collect(Collectors.toList());
         }
 
@@ -73,7 +73,7 @@ public class EvaluationInputService {
                         .empId(emp.getEmpId())
                         .empName(emp.getEmpName())
                         .deptId(emp.getDeptId())
-                        .position(emp.getPosition())
+                        .empRole(emp.getEmpRole())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -89,13 +89,13 @@ public class EvaluationInputService {
                 .orElseThrow(() -> new IllegalArgumentException("평가 대상자를 찾을 수 없습니다."));
 
         // CEO는 LEADER 평가 가능
-        if ("CEO".equals(evaluator.getPosition()) && "LEADER".equals(target.getPosition())) {
+        if ("CEO".equals(evaluator.getEmpRole()) && "LEADER".equals(target.getEmpRole())) {
             return true;
         }
 
         // LEADER는 같은 부서의 EMP 평가 가능
-        if ("LEADER".equals(evaluator.getPosition())
-                && "EMP".equals(target.getPosition())
+        if ("LEADER".equals(evaluator.getEmpRole())
+                && "EMP".equals(target.getEmpRole())
                 && evaluator.getDeptId() != null
                 && evaluator.getDeptId().equals(target.getDeptId())) {
             return true;
@@ -155,6 +155,114 @@ public class EvaluationInputService {
     }
 
     /**
+     * 평가자가 입력한 평가 목록 조회
+     */
+    @Transactional(readOnly = true)
+    public List<EvaluationResultDTO> getMyInputEvaluations(String email) {
+        Emp evaluator = empRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("평가자를 찾을 수 없습니다."));
+
+        System.out.println("[평가입력] 평가 목록 조회 - 평가자: " + evaluator.getEmpName() + ", 사번: " + evaluator.getEmpId());
+
+        List<EvaluationResult> results = resultRepository.findByEvaluatorIdOrderByCreatedAtDesc(evaluator.getEmpId());
+
+        return results.stream()
+                .map(this::convertToResultDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 평가 상세 조회 (수정용, 권한 체크 포함)
+     */
+    @Transactional(readOnly = true)
+    public EvaluationInputDTO getEvaluationForEdit(String evaluatorEmail, Long evaluationId) {
+        Emp evaluator = empRepository.findByEmail(evaluatorEmail)
+                .orElseThrow(() -> new IllegalArgumentException("평가자를 찾을 수 없습니다."));
+
+        EvaluationResult result = resultRepository.findById(evaluationId)
+                .orElseThrow(() -> new IllegalArgumentException("평가 결과를 찾을 수 없습니다."));
+
+        // 본인이 작성한 평가인지 확인
+        if (!result.getEvaluatorId().equals(evaluator.getEmpId())) {
+            System.out.println("[평가입력] 평가 조회 실패 - 권한 없음, 평가자: " + evaluator.getEmpName() + ", 평가ID: " + evaluationId);
+            throw new IllegalArgumentException("본인이 작성한 평가만 조회할 수 있습니다.");
+        }
+
+        System.out.println("[평가입력] 평가 상세 조회 - 평가ID: " + evaluationId + ", 평가자: " + evaluator.getEmpName());
+
+        // 평가 항목별 점수 조회
+        List<EvaluationScore> scores = scoreRepository.findByEvaluationId(evaluationId);
+        List<EvaluationScoreInputDTO> scoreInputDTOs = scores.stream()
+                .map(score -> EvaluationScoreInputDTO.builder()
+                        .criteriaId(score.getCriteriaId())
+                        .score(score.getScore())
+                        .build())
+                .collect(Collectors.toList());
+
+        return EvaluationInputDTO.builder()
+                .empId(result.getEmpId())
+                .evaluatorId(result.getEvaluatorId())
+                .evaluationPeriod(result.getEvaluationPeriod())
+                .comment(result.getComment())
+                .scores(scoreInputDTOs)
+                .build();
+    }
+
+    /**
+     * EvaluationResult를 EvaluationResultDTO로 변환
+     */
+    private EvaluationResultDTO convertToResultDTO(EvaluationResult result) {
+        Emp emp = empRepository.findByEmpId(result.getEmpId()).orElse(null);
+        Emp evaluator = empRepository.findByEmpId(result.getEvaluatorId()).orElse(null);
+
+        List<EvaluationScore> scores = scoreRepository.findByEvaluationId(result.getEvaluationId());
+        Map<Long, EvaluationCriteria> criteriaMap = criteriaRepository.findAll().stream()
+                .collect(Collectors.toMap(EvaluationCriteria::getCriteriaId, c -> c));
+
+        List<EvaluationScoreDTO> scoreDTOs = scores.stream()
+                .map(score -> {
+                    EvaluationCriteria criteria = criteriaMap.get(score.getCriteriaId());
+                    return EvaluationScoreDTO.builder()
+                            .detailId(score.getDetailId())
+                            .evaluationId(score.getEvaluationId())
+                            .criteriaId(score.getCriteriaId())
+                            .criteriaName(criteria != null ? criteria.getCriteriaName() : "")
+                            .weight(criteria != null ? criteria.getWeight() : 0)
+                            .score(score.getScore())
+                            .weightedScore(score.getScore() * (criteria != null ? criteria.getWeight() : 0) / 100)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        String grade = calculateGrade(result.getTotalScore());
+
+        return EvaluationResultDTO.builder()
+                .evaluationId(result.getEvaluationId())
+                .empId(result.getEmpId())
+                .empName(emp != null ? emp.getEmpName() : "")
+                .evaluatorId(result.getEvaluatorId())
+                .evaluatorName(evaluator != null ? evaluator.getEmpName() : "")
+                .totalScore(result.getTotalScore())
+                .evaluationPeriod(result.getEvaluationPeriod())
+                .comment(result.getComment())
+                .createdAt(result.getCreatedAt())
+                .scores(scoreDTOs)
+                .grade(grade)
+                .build();
+    }
+
+    /**
+     * 점수에 따른 등급 계산
+     */
+    private String calculateGrade(Integer totalScore) {
+        if (totalScore == null) return "C";
+        if (totalScore >= 90) return "S";
+        if (totalScore >= 80) return "A";
+        if (totalScore >= 70) return "B";
+        return "C";
+    }
+
+    /**
      * 평가 수정
      */
     @Transactional
@@ -206,5 +314,34 @@ public class EvaluationInputService {
                     .build();
             scoreRepository.save(score);
         }
+
+        System.out.println("[평가입력] 평가 수정 완료 - 평가ID: " + evaluationId + ", 평가자: " + evaluator.getEmpName());
+    }
+
+    /**
+     * 평가 삭제
+     */
+    @Transactional
+    public void deleteEvaluation(String evaluatorEmail, Long evaluationId) {
+        Emp evaluator = empRepository.findByEmail(evaluatorEmail)
+                .orElseThrow(() -> new IllegalArgumentException("평가자를 찾을 수 없습니다."));
+
+        EvaluationResult result = resultRepository.findById(evaluationId)
+                .orElseThrow(() -> new IllegalArgumentException("평가 결과를 찾을 수 없습니다."));
+
+        // 본인이 작성한 평가인지 확인
+        if (!result.getEvaluatorId().equals(evaluator.getEmpId())) {
+            System.out.println("[평가입력] 평가 삭제 실패 - 권한 없음, 평가자: " + evaluator.getEmpName() + ", 평가ID: " + evaluationId);
+            throw new IllegalArgumentException("본인이 작성한 평가만 삭제할 수 있습니다.");
+        }
+
+        // 평가 항목별 점수 삭제
+        List<EvaluationScore> scores = scoreRepository.findByEvaluationId(evaluationId);
+        scoreRepository.deleteAll(scores);
+
+        // 평가 결과 삭제
+        resultRepository.delete(result);
+
+        System.out.println("[평가입력] 평가 삭제 완료 - 평가ID: " + evaluationId + ", 평가자: " + evaluator.getEmpName() + ", 대상자: " + result.getEmpId());
     }
 }

@@ -12,6 +12,9 @@ public interface EvaluationResultRepository extends JpaRepository<EvaluationResu
     // 특정 직원의 평가 결과 조회
     List<EvaluationResult> findByEmpIdOrderByCreatedAtDesc(String empId);
 
+    // 특정 평가자가 작성한 평가 결과 조회
+    List<EvaluationResult> findByEvaluatorIdOrderByCreatedAtDesc(String evaluatorId);
+
     // 특정 평가 기간의 평가 결과 조회
     List<EvaluationResult> findByEvaluationPeriodOrderByTotalScoreDesc(String evaluationPeriod);
 

@@ -12,5 +12,5 @@ public class CurrentUserDTO {
     private String empName;
     private Integer deptId;
     private String email;
-    private String position;
+    private String empRole;
 }
