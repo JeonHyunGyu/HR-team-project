@@ -1,7 +1,7 @@
 const AdminAttendance = () => {
     return(
         <>
-            <h1>adminattendance</h1>
+            <h1>admin-attendance</h1>
         </>
     )
 }

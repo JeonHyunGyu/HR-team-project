@@ -1,7 +1,7 @@
 const LeaveApproval = () => {
     return(
         <>
-            <h1>leave</h1>
+            <h1>leave-approval</h1>
         </>
     )
 }

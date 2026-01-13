@@ -1,7 +1,7 @@
 const AnnualUsage = () => {
     return(
         <>
-            <h1>annualusagg</h1>
+            <h1>annual leave-usage</h1>
         </>
     )
 }

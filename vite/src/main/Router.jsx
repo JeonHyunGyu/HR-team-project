@@ -20,17 +20,23 @@ import Calender from "../features/schedule/pages/Calender.jsx";
 import Project from "../features/schedule/pages/Project.jsx";
 import ProjectManage from "../features/schedule/pages/ProjectManage.jsx";
 import Meeting from "../features/schedule/pages/Meeting.jsx";
-import Attendance from "../features/work/pages/Attendance.jsx";
-import LeaveRequest from "../features/work/pages/LeaveRequest.jsx";
-import LeaveStatus from "../features/work/pages/LeaveStatus.jsx";
-import AnnualUsage from "../features/work/pages/AnnualUsage.jsx";
-import WorkPolicy from "../features/work/pages/WorkPolicy.jsx";
-import AdminAttendance from "../features/work/pages/AdminAttendance.jsx";
-import AdminPolicy from "../features/work/pages/AdminPolicy.jsx";
-import LeaveApproval from "../features/work/pages/LeaveApproval.jsx";
-import AnnualPromotion from "../features/work/pages/AnnualPromotion.jsx";
+import Attendance from "../features/work/pages/employee/Attendance.jsx";
+import LeaveRequest from "../features/work/pages/employee/LeaveRequest.jsx";
+import LeaveStatus from "../features/work/pages/employee/LeaveStatus.jsx";
+import AnnualUsage from "../features/work/pages/employee/AnnualUsage.jsx";
+import WorkPolicy from "../features/work/pages/employee/WorkPolicy.jsx";
+import AdminAttendance from "../features/work/pages/admin/AdminAttendance.jsx";
+import AdminWorkPolicy from "../features/work/pages/admin/AdminWorkPolicy.jsx";
+import LeaveApproval from "../features/work/pages/admin/LeaveApproval.jsx";
+import AnnualLeave from "../features/work/pages/admin/AnnualLeave.jsx";
+import Salary from "../features/salary/pages/employee/Salary";
+import ObAllowance from "../features/salary/pages/employee/ObAllowance";
+import SalaryPolicy from "../features/salary/pages/employee/SalaryPolicy";
+import AdminSalary from "../features/salary/pages/admin/AdminSalary";
+import AdminSalaryPolicy from "../features/salary/pages/admin/AdminSalaryPolicy";
 import Dispatch from "../features/hrm/pages/Dispatch.jsx";
 import EmpSign from "./EmpSign.jsx";
+
 import Record from "../features/invite/Record.jsx";
 function Router() {
     return (
@@ -54,17 +60,28 @@ function Router() {
 
                 <Route path="work">
                     {/* 개인 근태 */}
-                    <Route path="attendance" element={<Attendance />} />
-                    <Route path="request" element={<LeaveRequest />} />
-                    <Route path="status" element={<LeaveStatus />} />
-                    <Route path="usage" element={<AnnualUsage />} />
-                    <Route path="policy" element={<WorkPolicy />} />
+                    <Route path="employee/attendance" element={<Attendance />} />
+                    <Route path="employee/request" element={<LeaveRequest />} />
+                    <Route path="employee/status" element={<LeaveStatus />} />
+                    <Route path="employee/usage" element={<AnnualUsage />} />
+                    <Route path="employee/policy" element={<WorkPolicy />} />
 
                     {/* 관리자 근태 */}
                     <Route path="admin/attendance" element={<AdminAttendance />} />
-                    <Route path="admin/policy" element={<AdminPolicy/>} />
+                    <Route path="admin/policy" element={<AdminWorkPolicy />} />
                     <Route path="admin/leaveapproval" element={<LeaveApproval />} />
-                    <Route path="admin/annualpromotion" element={<AnnualPromotion />} />
+                    <Route path="admin/annualleave" element={<AnnualLeave />} />
+                </Route>
+
+                <Route path="salary">
+                    {/* 일반사원 급여 */}
+                    <Route path="employee/salary" element={<Salary />} />
+                    <Route path="employee/oballowance" element={<ObAllowance />} />
+                    <Route path="employee/salarypolicy" element={<SalaryPolicy />} />
+
+                    {/* 관리자 급여 */}
+                    <Route path="admin/salary" element={<AdminSalary />} />
+                    <Route path="admin/salarypolicy" element={<AdminSalaryPolicy />} />
                 </Route>
 
                 <Route path="schedule">
