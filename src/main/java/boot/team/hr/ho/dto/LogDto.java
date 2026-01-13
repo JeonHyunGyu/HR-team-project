@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @ToString
 public class LogDto {
     private Long logId;
-    private Long empId;
+    private String empId;
     private String action;
     private String comment;
     private LocalDateTime createdAt;

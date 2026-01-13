@@ -21,5 +21,15 @@ public interface ApprovalService {
     void cancelApproval(ApprovalActionDto request);
 
     // 6. 사원별 결재 목록 조회
-    List<ApprovalResponseDto> getApprovalsByEmp(Long empId);
+    List<ApprovalResponseDto> getApprovalsByEmp(String empId);
+
+    // History.jsx
+    List<ApprovalResponseDto> getApprovalHistory(String empId);
+
+    // Pending.jsx - 내가 결재해야 할 문서
+    List<ApprovalResponseDto> getPendingToApprove(String empId);
+
+    // Pending.jsx - 내가 올린 문서 중 대기중
+    List<ApprovalResponseDto> getPendingRequested(String empId);
+
 }

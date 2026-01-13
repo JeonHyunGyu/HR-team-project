@@ -9,6 +9,6 @@ import lombok.ToString;
 @ToString
 public class ApprovalActionDto {
     private Long approvalId;  // 대상 결재 문서 ID
-    private Long empId;       // 결재자 ID
+    private String empId;       // 결재자 ID
     private String comment;   // 선택적 코멘트
 }

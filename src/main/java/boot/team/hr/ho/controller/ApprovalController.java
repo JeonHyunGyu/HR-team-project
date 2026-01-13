@@ -16,23 +16,62 @@ public class ApprovalController {
     private final ApprovalService approvalService;
 
     // -----------------------------
-    // 1. 결재 신청
+    // 1. 결재 신청 (Request.jsx)
     @PostMapping
-    public ResponseEntity<ApprovalResponseDto> createApproval(@RequestBody ApprovalRequestDto request) {
+    public ResponseEntity<ApprovalResponseDto> createApproval(
+            @RequestBody ApprovalRequestDto request
+    ) {
         ApprovalResponseDto response = approvalService.createApproval(request);
         return ResponseEntity.ok(response);
     }
 
     // -----------------------------
-    // 2. 결재 상세 조회
+    // 2. 결재 이력 (History.jsx)
+    // 내가 올린 문서 중 완료/반려/취소
+    @GetMapping("/history")
+    public ResponseEntity<List<ApprovalResponseDto>> getApprovalHistory(
+            @RequestParam String empId
+    ) {
+        List<ApprovalResponseDto> list =
+                approvalService.getApprovalHistory(empId);
+        return ResponseEntity.ok(list);
+    }
+
+    // -----------------------------
+    // 3-1. 결재 대기 - 내가 결재해야 할 문서 (Pending.jsx)
+    @GetMapping("/pending/approve")
+    public ResponseEntity<List<ApprovalResponseDto>> getPendingToApprove(
+            @RequestParam String empId
+    ) {
+        List<ApprovalResponseDto> list =
+                approvalService.getPendingToApprove(empId);
+        return ResponseEntity.ok(list);
+    }
+
+    // -----------------------------
+    // 3-2. 결재 대기 - 내가 올린 문서 중 대기중 (Pending.jsx)
+    @GetMapping("/pending/request")
+    public ResponseEntity<List<ApprovalResponseDto>> getPendingRequested(
+            @RequestParam String empId
+    ) {
+        List<ApprovalResponseDto> list =
+                approvalService.getPendingRequested(empId);
+        return ResponseEntity.ok(list);
+    }
+
+    // -----------------------------
+    // 4. 결재 상세 조회 (Detail.jsx)
     @GetMapping("/{approvalId}")
-    public ResponseEntity<ApprovalResponseDto> getApproval(@PathVariable Long approvalId) {
-        ApprovalResponseDto response = approvalService.getApproval(approvalId);
+    public ResponseEntity<ApprovalResponseDto> getApproval(
+            @PathVariable Long approvalId
+    ) {
+        ApprovalResponseDto response =
+                approvalService.getApproval(approvalId);
         return ResponseEntity.ok(response);
     }
 
     // -----------------------------
-    // 3. 결재 승인
+    // 5. 결재 승인
     @PostMapping("/{approvalId}/approve")
     public ResponseEntity<Void> approveApproval(
             @PathVariable Long approvalId,
@@ -44,7 +83,7 @@ public class ApprovalController {
     }
 
     // -----------------------------
-    // 4. 결재 반려
+    // 6. 결재 반려
     @PostMapping("/{approvalId}/reject")
     public ResponseEntity<Void> rejectApproval(
             @PathVariable Long approvalId,
@@ -56,7 +95,7 @@ public class ApprovalController {
     }
 
     // -----------------------------
-    // 5. 결재 취소
+    // 7. 결재 취소
     @PostMapping("/{approvalId}/cancel")
     public ResponseEntity<Void> cancelApproval(
             @PathVariable Long approvalId,
@@ -67,13 +106,4 @@ public class ApprovalController {
         return ResponseEntity.ok().build();
     }
 
-    // -----------------------------
-    // 6. 사원별 결재 목록 조회
-    @GetMapping
-    public ResponseEntity<List<ApprovalResponseDto>> getApprovalsByEmp(
-            @RequestParam Long empId
-    ) {
-        List<ApprovalResponseDto> approvals = approvalService.getApprovalsByEmp(empId);
-        return ResponseEntity.ok(approvals);
-    }
 }

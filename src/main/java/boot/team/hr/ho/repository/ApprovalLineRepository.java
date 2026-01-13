@@ -20,4 +20,7 @@ public interface ApprovalLineRepository extends JpaRepository<ApprovalLine, Long
 
     // 승인(또는 반려)된 결재선 존재 여부
     boolean existsByApprovalIdAndActionAtIsNotNull(Long approvalId);
+
+    // 현재 결재자인 문서 조회 (내가 결재해야 할 문서)
+    List<ApprovalLine> findByEmpIdAndCurrentTrue(String empId);
 }

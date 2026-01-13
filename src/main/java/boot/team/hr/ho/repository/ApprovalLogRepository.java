@@ -13,5 +13,5 @@ public interface ApprovalLogRepository extends JpaRepository<ApprovalLog, Long> 
     List<ApprovalLog> findByApprovalIdOrderByLogId(Long approvalId);
 
     // 특정 사원의 결재 이력 조회
-    List<ApprovalLog> findByEmpId(Long empId);
+    List<ApprovalLog> findByEmpId(String empId);
 }

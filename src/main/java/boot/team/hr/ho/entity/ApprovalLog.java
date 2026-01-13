@@ -28,12 +28,12 @@ public class ApprovalLog {
     private Long approvalId;
 
     @Column(name = "EMP_ID", nullable = false)
-    private Long empId;
+    private String empId;
 
     @Column(name = "ACTION", nullable = false)
     private String action;
 
-    @Column(name = "COMMENT")
+    @Column(name = "COM")
     private String comment;
 
     @Column(name = "CREATED_AT", nullable = false)
@@ -41,7 +41,7 @@ public class ApprovalLog {
 
     public static ApprovalLog create(
             Long approvalId,
-            Long empId,
+            String empId,
             String action,
             String comment
     ) {

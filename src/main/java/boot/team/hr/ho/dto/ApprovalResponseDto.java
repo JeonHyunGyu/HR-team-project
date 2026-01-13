@@ -12,7 +12,7 @@ import java.util.List;
 @ToString
 public class ApprovalResponseDto {
     private Long approvalId;
-    private Long empId;
+    private String empId;
     private Long typeId;
     private String title;
     private String content;

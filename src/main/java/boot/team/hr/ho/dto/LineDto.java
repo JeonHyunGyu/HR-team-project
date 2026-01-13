@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @ToString
 public class LineDto {
     private Long lineId;
-    private Long empId;
+    private String empId;
     private Integer stepOrder;
     private boolean current;
     private LocalDateTime actionAt;

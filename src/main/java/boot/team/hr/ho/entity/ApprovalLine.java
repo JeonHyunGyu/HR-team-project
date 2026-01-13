@@ -28,12 +28,12 @@ public class ApprovalLine {
     private Long approvalId;
 
     @Column(name = "EMP_ID", nullable = false)
-    private Long empId;
+    private String empId;
 
     @Column(name = "STEP_ORDER", nullable = false)
     private Integer stepOrder;
 
-    @Column(name = "CURRENT", nullable = false)
+    @Column(name = "IS_CURRENT", nullable = false)
     private boolean current;
 
     @Column(name = "ACTION_AT")
@@ -52,7 +52,7 @@ public class ApprovalLine {
         this.actionAt = LocalDateTime.now();
     }
 
-    public static ApprovalLine create(Long approvalId, Long empId, Integer stepOrder, boolean isCurrent) {
+    public static ApprovalLine create(Long approvalId, String empId, Integer stepOrder, boolean isCurrent) {
         ApprovalLine line = new ApprovalLine();
         line.approvalId = approvalId;
         line.empId = empId;

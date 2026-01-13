@@ -21,7 +21,7 @@ public class ApprovalDoc {
     private Long approvalId;
 
     @Column(name = "EMP_ID", nullable = false)
-    private Long empId;
+    private String empId;
 
     @Column(name = "TYPE_ID", nullable = false)
     private Long typeId;
@@ -43,7 +43,7 @@ public class ApprovalDoc {
     private LocalDateTime updatedAt;
 
     public static ApprovalDoc create(
-            Long empId,
+            String empId,
             Long typeId,
             String title,
             String content
