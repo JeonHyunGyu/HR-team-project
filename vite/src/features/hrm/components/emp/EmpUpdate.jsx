@@ -130,7 +130,7 @@ const EmpUpdate = () => {
                         </tr>
                     </tbody>
                 </table>
-                <button type="submit">제출</button>
+                <button type="submit">사원 수정</button>
             </form>
         </div>
     );

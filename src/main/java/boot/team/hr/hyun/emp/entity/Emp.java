@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Setter
 public class Emp {
     @Id
-    @Column(name = "emp_id") // DB 컬럼명은 emp_id
-    private String empId;    // Java 필드명은 empId a1001
+    @Column(name = "emp_id")
+    private String empId;
 
     @Column(name = "emp_name")
     private String empName;
@@ -23,9 +23,9 @@ public class Emp {
     private String email;
 
     @Column(name = "emp_role")
-    private String empRole; // CEO, Manager, TeamLeader, Employee ( CEO -> 담당관 -> 팀장 -> 사원)
+    private String empRole;
 
-    private Integer managerId; // 직속상관 ( 사수 ) - 규호
+    private Integer managerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
@@ -34,9 +34,35 @@ public class Emp {
     )
     private Dept dept;
 
-    @Column(name = "created_at")
+    // updatable = false를 설정하여 실수로 생성일이 수정되는 것을 방지합니다.
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // --- JPA Lifecycle Events ---
+
+    @PrePersist
+    public void prePersist() {
+        // 엔티티가 처음 저장(INSERT)될 때 실행
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        // 엔티티가 수정(UPDATE)될 때 실행
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // --- 비즈니스 메서드 ---
+    public void update(String empName, String email, String empRole, Dept dept) {
+        this.empName = empName;
+        this.email = email;
+        this.empRole = empRole;
+        this.dept = dept;
+        // 여기서 직접 updatedAt을 세팅하지 않아도 @PreUpdate가 처리합니다.
+    }
 }

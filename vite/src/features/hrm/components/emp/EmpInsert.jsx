@@ -136,7 +136,7 @@ const EmpInsert = () => {
                     </tr>
                     </tbody>
                 </table>
-                <button type="submit">제출</button>
+                <button type="submit">사원 등록</button>
             </form>
         </div>
     );

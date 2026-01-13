@@ -1,8 +1,12 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 
 const DeptSelectAll = () => {
     const [deptList, setDeptList] = useState([]);
+
+    useEffect(() => {
+        handleClick();
+    }, []);
 
     const handleClick = async () => {
         try {
@@ -24,7 +28,7 @@ const DeptSelectAll = () => {
                     <table border="1">
                         <thead>
                         <tr>
-                            <th>부사 번호 </th>
+                            <th>부서 번호 </th>
                             <th>부서 이름 </th>
                             <th>부서 위치 </th>
                             <th>상위 부서번호 </th>
@@ -43,7 +47,7 @@ const DeptSelectAll = () => {
                                 <td>{dept.deptName}</td>
                                 <td>{dept.deptLoc}</td>
                                 <td>{dept.parentDeptNo}</td>
-                                <td>{dept.treeLevel}<button>초대</button></td>
+                                <td>{dept.treeLevel}</td>
                                 <td>{dept.siblingOrder}</td>
                                 <td>{dept.createdAt}</td>
                                 <td>{dept.updatedAt}</td>
@@ -53,7 +57,7 @@ const DeptSelectAll = () => {
                     </table>
                 </div>
             )}
-            <button onClick={handleClick}>제출</button>
+            <button onClick={handleClick}>부서 전체 조회</button>
         </div>
     );
 };

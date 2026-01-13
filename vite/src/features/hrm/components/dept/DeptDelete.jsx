@@ -55,7 +55,7 @@ const DeptDelete = () => {
                     </tr>
                     </tbody>
                 </table>
-                <button type="submit">제출</button>
+                <button type="submit">부서 삭제</button>
             </form>
         </div>
     );

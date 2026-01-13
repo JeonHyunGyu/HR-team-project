@@ -1,8 +1,13 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 
 const EmpSelectAll = () => {
     const [empList, setEmpList] = useState([]);
+
+    useEffect(() => {
+        handleClick();
+    }, []);
+
 
     const handleClick = async () => {
         try {
@@ -58,15 +63,11 @@ const EmpSelectAll = () => {
                                 <td>{emp.empId}</td>
                                 <td>{emp.deptNo}</td>
                                 <td>{emp.empName}</td>
-                                <td>{emp.email}<button>초대</button></td>
-                                <td>{emp.empRole}</td>
                                 <td>{emp.email} <button
                                     type="button"
                                     onClick={() => handleInvite(emp)}
-                                    style={{ marginLeft: "8px" }}
-                                >
-                                    초대
-                                </button></td>
+                                    style={{ marginLeft: "8px" }}>초대</button></td>
+                                <td>{emp.empRole}</td>
                                 <td>{emp.role}</td>
                                 <td>{emp.createdAt}</td>
                                 <td>{emp.updatedAt}</td>
@@ -76,7 +77,7 @@ const EmpSelectAll = () => {
                     </table>
                 </div>
             )}
-            <button onClick={handleClick}>제출</button>
+            <button onClick={handleClick}>사원 전체 조회</button>
         </div>
     );
 };
