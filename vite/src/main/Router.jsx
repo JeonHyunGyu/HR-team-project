@@ -38,6 +38,8 @@ import Dispatch from "../features/hrm/pages/Dispatch.jsx";
 import EmpSign from "./EmpSign.jsx";
 
 import Record from "../features/invite/Record.jsx";
+import ApprovalLayout from "../features/approval/components/ApprovalLayout.jsx";
+import Detail from "../features/approval/pages/Detail.jsx";
 function Router() {
     return (
         <Routes>
@@ -104,11 +106,13 @@ function Router() {
                 <Route path="history"  element={<History />}/>
                 </Route>
 
-                <Route path="approval">
-                <Route path="request"   element={<Request />}/>
-                <Route path="pending" element={<Pending />}/>
-                <Route path="history" element={<History />}/>
+                <Route path="approval" element={<ApprovalLayout />}>
+                    <Route path="request" element={<Request />} />
+                    <Route path="pending" element={<Pending />} />
+                    <Route path="history" element={<History />} />
+                    <Route path="detail/:approvalId" element={<Detail />} />
                 </Route>
+
             </Route>
         </Routes>
     );
