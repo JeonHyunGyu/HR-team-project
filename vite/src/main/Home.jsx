@@ -5,6 +5,8 @@ import {Link, Outlet, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import { useAuth } from "./AuthContext";
 
+//import {useAuth} from "./AuthContext";
+import { useAuth } from "./AuthContext.jsx";
 
 const Home = () => {
 
@@ -18,14 +20,17 @@ const Home = () => {
     const [openReward, setOpenReward] = useState(false);
     const navigate = useNavigate();
 
-    const handleLogout = async () => {
-        await fetch("/back/logout", { method: "POST", credentials: "include" });
-        navigate("/"); // 로그아웃 후 로그인 페이지 이동
-    };
+    const { logout } = useAuth();
 
-    const {user} = useAuth();
-    console.log(user);
-    console.log(user?.role);
+
+    const handleLogout = async () => {
+        try {
+            await logout(); // context에 정의된 logout 사용
+            navigate("/"); // 로그아웃 후 로그인 페이지 이동
+        } catch (err) {
+            console.error("로그아웃 실패", err);
+        }
+    };
 
     return (
         <div className="admin-page">
@@ -50,7 +55,7 @@ const Home = () => {
 
                             {/* 홈 */}
                             <Nav.Link as={Link} to="/main">홈</Nav.Link>
-                            
+
                             {/*초대*/}
                             <Nav.Link onClick={() => setOpenInvite(!openInvite)}>
                                 초대 {openInvite ? "▾" : "▸"}

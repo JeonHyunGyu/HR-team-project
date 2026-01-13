@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -32,24 +34,29 @@ public class SecurityConfig {
                     return corsConfig;
                 }))
                 .csrf(csrf -> csrf.disable())
-                
+
                 //일단 전부오픈
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
                 )
                 .userDetailsService(customUserDetailsService)
+
                 // 로그인 설정
                 .formLogin(form -> form
                         .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .successHandler((request, response, authentication) -> {
+                            // SecurityContext 강제 갱신 → SPA에서 Role 즉시 반영
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+
                             response.setStatus(200);
                         })
                         .failureHandler((request, response, exception) -> {
                             response.setStatus(401);
                         })
                 )
+
                 // 로그아웃 설정
                 .logout(logout -> logout
                         .logoutUrl("/logout")
