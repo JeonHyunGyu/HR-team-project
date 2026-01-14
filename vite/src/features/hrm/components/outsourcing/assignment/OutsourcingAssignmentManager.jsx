@@ -62,14 +62,26 @@ const OutsourcingAssignmentManager = () => {
     };
 
     const handleSave = async () => {
-        const url = selected.isNew ? "insertAssignment" : "updateAssignment";
+        // 1. 상태에 따라 URL과 HTTP 메서드를 결정합니다.
+        const isNew = selected.isNew;
+        const url = isNew ? "/back/hyun/outsourcing/insertAssignment" : "/back/hyun/outsourcing/updateAssignment";
+        const method = isNew ? "post" : "put"; // insert는 post, update는 put
+
         try {
-            await axios.post(`/back/hyun/outsourcing/${url}`, selected, { withCredentials: true });
-            alert("저장되었습니다.");
+            // 2. axios 설정을 동적으로 적용합니다.
+            await axios({
+                method: method,
+                url: url,
+                data: selected,
+                withCredentials: true
+            });
+
+            alert(isNew ? "신규 배정이 저장되었습니다." : "배정 정보가 수정되었습니다.");
             setSelected(null);
             fetchInitialData();
         } catch (e) {
-            alert("저장 실패: 입력값을 확인하세요.");
+            console.error("저장 실패", e);
+            alert("저장 실패: 입력값을 확인하거나 서버 로그를 확인하세요.");
         }
     };
 

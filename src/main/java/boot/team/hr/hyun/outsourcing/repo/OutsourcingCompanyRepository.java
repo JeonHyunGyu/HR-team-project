@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface OutsourcingCompanyRepository extends JpaRepository<OutsourcingCompany,Long> {
     void deleteByCompanyName(String companyName);
-    Optional<OutsourcingCompany> findByCompanyName(String companyName);
 }

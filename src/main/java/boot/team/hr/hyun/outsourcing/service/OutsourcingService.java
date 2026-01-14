@@ -42,7 +42,7 @@ public class OutsourcingService {
     }
     @Transactional
     public void updateOutsourcingCompany(OutsourcingCompanyDto outsourcingCompanyDto){
-        OutsourcingCompany outsourcingCompany = outsourcingCompanyRepository.findByCompanyName(outsourcingCompanyDto.getCompanyName())
+        OutsourcingCompany outsourcingCompany = outsourcingCompanyRepository.findById(outsourcingCompanyDto.getCompanyId())
                 .orElseThrow(()->new RuntimeException("해당하는 파견업체가 없습니다."));
         outsourcingCompany.setCompanyName(outsourcingCompanyDto.getCompanyName());
     }
