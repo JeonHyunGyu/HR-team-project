@@ -1,15 +1,14 @@
 package boot.team.hr.hyun.dept.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class DeptDto {
     private Integer deptNo;
     private String deptName;

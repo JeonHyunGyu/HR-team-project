@@ -1,15 +1,14 @@
 package boot.team.hr.hyun.emp.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmpDto {
     private String empId;   // 사원번호
     private String empName; // 사원 이름

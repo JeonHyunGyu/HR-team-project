@@ -2,9 +2,7 @@ package boot.team.hr.hyun.outsourcing.entity;
 
 import boot.team.hr.hyun.emp.entity.Emp;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,7 +10,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "outsourcing_assignment")
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class OutsourcingAssignment {
 
@@ -51,6 +50,15 @@ public class OutsourcingAssignment {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;    // 행 수정일
+
+    public void update(Emp emp, OutsourcingCompany company, String projectName, String status, LocalDate startDate, LocalDate endDate) {
+        this.emp = emp;
+        this.company = company;
+        this.projectName = projectName;
+        this.status = status;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 
     @PrePersist
     public void prePersist() {

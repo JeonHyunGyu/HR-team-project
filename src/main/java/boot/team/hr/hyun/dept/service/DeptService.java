@@ -18,71 +18,49 @@ public class DeptService {
 
     public List<DeptDto> selectAll(){
         List<Dept> depts = deptRepository.findAll();
-        List<DeptDto> deptArr = new ArrayList<>() ;
+        List<DeptDto> dtos = new ArrayList<>() ;
         for(Dept dept : depts){
-            DeptDto deptDto = new DeptDto();
-            deptDto.setDeptNo(dept.getDeptNo());
-            deptDto.setDeptName(dept.getDeptName());
-            deptDto.setDeptLoc(dept.getDeptLoc());
-            if(dept.getParent() != null){
-                deptDto.setParentDeptNo(dept.getParent().getDeptNo());
-            }else {
-                deptDto.setParentDeptNo(null);
-            }
-            deptDto.setTreeLevel(dept.getTreeLevel());
-            deptDto.setSiblingOrder(dept.getSiblingOrder());
-
-            deptDto.setCreatedAt(dept.getCreatedAt());
-            deptDto.setUpdatedAt(dept.getUpdatedAt());
-            deptArr.add(deptDto);
+            DeptDto deptDto = DeptDto.builder()
+                    .deptNo(dept.getDeptNo())
+                    .deptName(dept.getDeptName())
+                    .deptLoc(dept.getDeptLoc())
+                    .parentDeptNo(dept.getParent() != null ? dept.getParent().getDeptNo() : null)
+                    .treeLevel(dept.getTreeLevel())
+                    .siblingOrder(dept.getSiblingOrder())
+                    .createdAt(dept.getCreatedAt())
+                    .updatedAt(dept.getUpdatedAt())
+                    .build();
+            dtos.add(deptDto);
         }
-        return deptArr;
+        return dtos;
     }
     public void insertDept(DeptDto deptDto){
-        Dept dept = new Dept();
-        dept.setDeptNo(deptDto.getDeptNo());
-        dept.setDeptName(deptDto.getDeptName());
-        dept.setDeptLoc(deptDto.getDeptLoc());
-//        dept.setParentDeptId(deptDto.getParentDeptId());
-        if(deptDto.getParentDeptNo() != null){
-            Dept parentDept = deptRepository.findById(deptDto.getParentDeptNo())
-                    .orElseThrow(()-> new RuntimeException("해당 부서가 없습니다."));
-
-            dept.setParent(parentDept);
-            dept.setTreeLevel(parentDept.getTreeLevel() + 1);
-        }else{
-            dept.setParent(null);
-            dept.setTreeLevel(0);
-        }
-//        dept.setTreeLevel(deptDto.getTreeLevel());
-
-        dept.setSiblingOrder(deptDto.getSiblingOrder());
-        dept.setCreatedAt(LocalDateTime.now());
-        dept.setUpdatedAt(LocalDateTime.now());
+        Dept parent = deptRepository.findById(deptDto.getParentDeptNo())
+                .orElseThrow(()-> new RuntimeException("해당 부서가 없습니다."));
+        Dept dept = Dept.builder()
+                .deptNo(deptDto.getDeptNo())
+                .deptName(deptDto.getDeptName())
+                .deptLoc(deptDto.getDeptLoc())
+                .parent(deptDto.getParentDeptNo() != null ? parent : null)
+                .treeLevel(deptDto.getParentDeptNo() != null ? parent.getTreeLevel() + 1 : 0)
+                .siblingOrder(deptDto.getSiblingOrder())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(null)
+                .build();
         deptRepository.save(dept);
     }
     @Transactional
     public void updateDept(DeptDto deptDto){
         Dept dept = deptRepository.findById(deptDto.getDeptNo())
                 .orElseThrow(()-> new RuntimeException("해당 부서 없음"));
-        dept.setDeptName(deptDto.getDeptName());
-        dept.setDeptLoc(deptDto.getDeptLoc());
-//        dept.setParentDeptId(deptDto.getParentDeptId());
-
-        if(deptDto.getParentDeptNo() != null){
-            Dept parentDept = deptRepository.findById(deptDto.getParentDeptNo())
-                    .orElseThrow(()-> new RuntimeException("해당 부서가 없습니다."));
-
-            dept.setParent(parentDept);
-            dept.setTreeLevel(parentDept.getTreeLevel() + 1);
-        }else{
-            dept.setParent(null);
-            dept.setTreeLevel(0);
-        }
-//        dept.setTreeLevel(deptDto.getTreeLevel());
-
-        dept.setSiblingOrder(deptDto.getSiblingOrder());
-        dept.setUpdatedAt(LocalDateTime.now());
+        Dept parent = deptRepository.findById(deptDto.getParentDeptNo())
+                .orElseThrow(()-> new RuntimeException("해당 상위부서 없음"));
+       dept.update(
+               deptDto.getDeptName(),
+               deptDto.getDeptLoc(),
+               parent,
+               parent.getTreeLevel()+1,
+               deptDto.getSiblingOrder());
     }
     @Transactional
     public void deleteDept(Integer deptId){

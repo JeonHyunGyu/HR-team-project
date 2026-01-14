@@ -1,16 +1,15 @@
 package boot.team.hr.hyun.outsourcing.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "outsourcing_company")
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class OutsourcingCompany {
 
@@ -32,6 +31,10 @@ public class OutsourcingCompany {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public void update(String companyName) {
+        this.companyName = companyName;
+    }
 
     @PrePersist
     public void prePersist() {

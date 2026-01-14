@@ -14,7 +14,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional // 서비스의 모든 작업은 트랜잭션 안에서 실행됩니다.
 public class EmpService {
     private final EmpRepository empRepository;
     private final DeptRepository deptRepository;
@@ -26,53 +25,44 @@ public class EmpService {
 
         // 익숙한 for문 방식으로 작성했습니다.
         for (Emp emp : emps) {
-            EmpDto dto = new EmpDto();
-            dto.setEmpId(emp.getEmpId());
-            dto.setEmpName(emp.getEmpName());
-            dto.setEmail(emp.getEmail());
-            dto.setEmpRole(emp.getEmpRole());
+                EmpDto dto = EmpDto.builder()
+                        .empId(emp.getEmpId())
+                        .empName(emp.getEmpName())
+                        .email(emp.getEmail())
+                        .empRole(emp.getEmpRole())
+                        // 부서가 아직 없어도 null로 표시
+                        .deptNo(emp.getDept() != null ? emp.getDept().getDeptNo() : null)
+                        .createdAt(emp.getCreatedAt())
+                        .updatedAt(emp.getUpdatedAt())
+                        .build();
+                dtos.add(dto);
 
-            if (emp.getDept() != null) {
-                dto.setDeptNo(emp.getDept().getDeptNo());
-            }
-
-            // 날짜는 엔티티에서 관리되므로 null 체크 후 바로 담습니다.
-            dto.setCreatedAt(emp.getCreatedAt());
-            dto.setUpdatedAt(emp.getUpdatedAt());
-
-            dtos.add(dto);
         }
         return dtos;
     }
 
     public void insertEmp(EmpDto empDto) {
-        Emp emp = new Emp();
-        emp.setEmpId(empDto.getEmpId());
+        Dept dept = deptRepository.findById(empDto.getDeptNo())
+                .orElseThrow(() -> new RuntimeException("해당 부서가 없습니다."));
 
-        Dept dept = null;
-        if (empDto.getDeptNo() != null) {
-            dept = deptRepository.findById(empDto.getDeptNo())
-                    .orElseThrow(() -> new RuntimeException("해당 부서가 없습니다."));
-        }
-
-        // 엔티티의 update 메서드 호출 (시간 세팅은 @PrePersist가 담당)
-        emp.update(empDto.getEmpName(), empDto.getEmail(), empDto.getEmpRole(), dept);
-
+        Emp emp = Emp.builder()
+                .empId(empDto.getEmpId())
+                .empName(empDto.getEmpName())
+                .email(empDto.getEmail())
+                .empRole(empDto.getEmpRole())
+                .dept(dept)
+                .build();
         empRepository.save(emp);
     }
 
+    @Transactional
     public void updateEmp(EmpDto empDto) {
         Emp emp = empRepository.findById(empDto.getEmpId())
                 .orElseThrow(() -> new RuntimeException("해당 사원 없음"));
-
-        Dept dept = null;
-        if (empDto.getDeptNo() != null) {
-            dept = deptRepository.findById(empDto.getDeptNo())
+        Dept dept = deptRepository.findById(empDto.getDeptNo())
                     .orElseThrow(() -> new RuntimeException("부서 번호가 올바르지 않습니다."));
-        }
-
-        // 엔티티의 update 메서드 호출 (시간 세팅은 @PreUpdate가 담당)
-        // @Transactional 덕분에 save() 없이도 자동 업데이트(Dirty Checking)됩니다.
+        // 사번은 기본키이므로 변경하지 않도록 함.
+        // @Builder는 객체를 "생성"하기에 수정작업에는 사용하지 않는다.
         emp.update(empDto.getEmpName(), empDto.getEmail(), empDto.getEmpRole(), dept);
     }
 

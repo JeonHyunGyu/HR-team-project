@@ -2,15 +2,15 @@ package boot.team.hr.hyun.emp.entity;
 
 import boot.team.hr.hyun.dept.entity.Dept;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 public class Emp {
     @Id
     @Column(name = "emp_id")
