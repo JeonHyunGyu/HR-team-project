@@ -18,8 +18,8 @@ public class DeptDto {
     private Integer treeLevel;
     private Integer siblingOrder;
 
-    @JsonFormat(pattern = "yy년 MM월 dd일 HH시 mm분 ss초", locale = "ko")
+    @JsonFormat(pattern = "yy-MM-dd HH시 mm분")
     private LocalDateTime createdAt;
-    @JsonFormat(pattern = "yy년 MM월 dd일 HH시 mm분 ss초", locale = "ko")
+    @JsonFormat(pattern = "yy-MM-dd HH시 mm분")
     private LocalDateTime updatedAt;
 }

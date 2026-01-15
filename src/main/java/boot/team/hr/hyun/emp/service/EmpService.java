@@ -30,6 +30,7 @@ public class EmpService {
                         .empName(emp.getEmpName())
                         .email(emp.getEmail())
                         .empRole(emp.getEmpRole())
+                        .hireDate(emp.getHireDate())
                         // 부서가 아직 없어도 null로 표시
                         .deptNo(emp.getDept() != null ? emp.getDept().getDeptNo() : null)
                         .createdAt(emp.getCreatedAt())
@@ -50,6 +51,7 @@ public class EmpService {
                 .empName(empDto.getEmpName())
                 .email(empDto.getEmail())
                 .empRole(empDto.getEmpRole())
+                .hireDate(empDto.getHireDate())
                 .dept(dept)
                 .build();
         empRepository.save(emp);
@@ -63,10 +65,29 @@ public class EmpService {
                     .orElseThrow(() -> new RuntimeException("부서 번호가 올바르지 않습니다."));
         // 사번은 기본키이므로 변경하지 않도록 함.
         // @Builder는 객체를 "생성"하기에 수정작업에는 사용하지 않는다.
-        emp.update(empDto.getEmpName(), empDto.getEmail(), empDto.getEmpRole(), dept);
+        emp.update(empDto.getEmpName(), empDto.getEmail(), empDto.getEmpRole(), empDto.getHireDate(), dept);
     }
 
     public void deleteEmp(String empId) {
         empRepository.deleteById(empId);
+    }
+
+    public List<EmpDto> selectEmpByDeptNo(Integer deptno){
+        List<Emp> emps = empRepository.findByDept_DeptNo(deptno);
+        List<EmpDto> dtos = new ArrayList<>();
+        for(Emp emp : emps){
+            EmpDto dto = EmpDto.builder()
+                    .empId(emp.getEmpId())
+                    .empName(emp.getEmpName())
+                    .email(emp.getEmail())
+                    .empRole(emp.getEmpRole())
+                    .hireDate(emp.getHireDate())
+                    .deptNo(emp.getDept().getDeptNo())
+                    .createdAt(emp.getCreatedAt())
+                    .updatedAt(emp.getUpdatedAt())
+                    .build();
+            dtos.add(dto);
+        }
+        return dtos;
     }
 }

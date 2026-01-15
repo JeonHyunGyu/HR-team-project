@@ -75,8 +75,7 @@ const OutsourcingCompanyManager = () => {
                 <button
                     onClick={() => setSelected({ isNew: true, companyName: "" })}
                     style={{
-                        width: "100%", padding: "12px", marginBottom: "20px",
-                        backgroundColor: "#f8f9fa", border: "1px dashed #ccc", cursor: "pointer"
+                        width:"100%", marginBottom: "15px", padding: "12px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold"
                     }}
                 >
                     + 새 업체 등록
@@ -107,7 +106,7 @@ const OutsourcingCompanyManager = () => {
             <div style={{ flex: 1, padding: "20px", backgroundColor: "#fcfcfc", borderRadius: "8px" }}>
                 {selected ? (
                     <div style={{ maxWidth: "500px" }}>
-                        <h3>{selected.isNew ? "✨ 새 파견업체 등록" : "🏢 업체 정보 수정"}</h3>
+                        <h3>{selected.isNew ? "새 파견업체 등록" : "업체 정보 수정"}</h3>
                         <hr style={{ margin: "20px 0", border: "0.5px solid #eee" }} />
 
                         <div style={{ marginBottom: "20px" }}>
@@ -147,7 +146,7 @@ const OutsourcingCompanyManager = () => {
                     </div>
                 ) : (
                     <div style={{ textAlign: "center", marginTop: "100px", color: "#999" }}>
-                        <div style={{ fontSize: "40px", marginBottom: "20px" }}>🏢</div>
+                        <div style={{ fontSize: "40px", marginBottom: "20px" }}></div>
                         <p>좌측 리스트에서 업체를 선택하거나<br/>새로운 업체를 등록해 주세요.</p>
                     </div>
                 )}

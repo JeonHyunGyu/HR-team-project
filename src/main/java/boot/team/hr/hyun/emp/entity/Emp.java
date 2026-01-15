@@ -4,6 +4,7 @@ import boot.team.hr.hyun.dept.entity.Dept;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,6 +25,9 @@ public class Emp {
 
     @Column(name = "emp_role")
     private String empRole;
+
+    @Column(name = "hire_date") // 추가: 입사일
+    private LocalDate hireDate;
 
     private String managerId;
 
@@ -58,10 +62,11 @@ public class Emp {
     }
 
     // --- 비즈니스 메서드 ---
-    public void update(String empName, String email, String empRole, Dept dept) {
+    public void update(String empName, String email, String empRole, LocalDate hireDate, Dept dept) {
         this.empName = empName;
         this.email = email;
         this.empRole = empRole;
+        this.hireDate = hireDate;
         this.dept = dept;
         // 여기서 직접 updatedAt을 세팅하지 않아도 @PreUpdate가 처리합니다.
     }

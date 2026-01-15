@@ -3,7 +3,7 @@ import axios from "axios";
 
 const EmpDetail = ({ selectedEmp, onSuccess }) => {
     const [form, setForm] = useState({
-        empId: "", empName: "", deptNo: "", email: "", empRole: ""
+        empId: "", empName: "", deptNo: "", email: "", hireDate:"", empRole: ""
     });
 
     useEffect(() => {
@@ -91,6 +91,10 @@ const EmpDetail = ({ selectedEmp, onSuccess }) => {
                 <tr>
                     <th style={{ textAlign: "left" }}>이메일</th>
                     <td><input name="email" type="email" value={form.email} onChange={handleChange} style={{ width: "100%", padding: "8px" }} /></td>
+                </tr>
+                <tr>
+                    <th style={{ textAlign: "left" }}>입사일</th>
+                    <td><input name="hireDate" type="date" value={form.hireDate} onChange={handleChange} style={{ width: "100%", padding: "8px" }} /></td>
                 </tr>
                 <tr>
                     <th style={{ textAlign: "left" }}>직급</th>

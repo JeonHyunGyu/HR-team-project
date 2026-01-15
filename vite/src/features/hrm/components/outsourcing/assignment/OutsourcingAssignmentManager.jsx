@@ -105,7 +105,7 @@ const OutsourcingAssignmentManager = () => {
             {/* 왼쪽: 프로젝트별 그룹 리스트 */}
             <div style={{ width: "400px", border: "1px solid #ddd", borderRadius: "8px", padding: "15px", backgroundColor: "#fdfdfd" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                    <h5 style={{ margin: 0 }}>📂 프로젝트별 인원</h5>
+                    <h5 style={{ margin: 0 }}>프로젝트별 인원</h5>
                     <button onClick={handleNew} className="btn btn-sm btn-primary">+ 배정 추가</button>
                 </div>
 
@@ -147,7 +147,7 @@ const OutsourcingAssignmentManager = () => {
             <div style={{ flex: 1, border: "1px solid #ddd", borderRadius: "8px", padding: "25px", backgroundColor: "#fff" }}>
                 {selected ? (
                     <div>
-                        <h4>{selected.isNew ? "✨ 신규 사원 배정" : "📝 배정 상세 수정"}</h4>
+                        <h4>{selected.isNew ? "신규 사원 배정" : "배정 상세 수정"}</h4>
                         <hr />
                         <div className="row g-3">
                             <div className="col-md-6">
@@ -196,7 +196,7 @@ const OutsourcingAssignmentManager = () => {
                     </div>
                 ) : (
                     <div style={{ textAlign: "center", marginTop: "150px", color: "#ccc" }}>
-                        <h1 style={{fontSize: "60px"}}>📂</h1>
+                        <h1 style={{fontSize: "60px"}}></h1>
                         <p>프로젝트를 선택하거나 신규 배정을 등록해 주세요.</p>
                     </div>
                 )}

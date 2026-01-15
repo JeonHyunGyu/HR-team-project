@@ -2,28 +2,29 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 const DeptDetail = ({ selectedDept, onSuccess }) => {
-    // 1. 초기 상태 설정 (엔티티/DTO 구조와 일치)
+    const [activeTab, setActiveTab] = useState("info");
+    const [deptEmployees, setDeptEmployees] = useState([]);
+    const [history, setHistory] = useState([]);
+    const [allDepts, setAllDepts] = useState([]);
+
     const [form, setForm] = useState({
         deptNo: "",
         deptName: "",
         deptLoc: "",
-        parentDeptNo: "", // 상위 부서 번호
-        treeLevel: 0,     // 백엔드에서 계산하지만 표시용으로 유지
-        siblingOrder: 1   // 기본값 1 (첫 번째 순서)
+        parentDeptNo: "",
+        treeLevel: 0,
+        siblingOrder: 1
     });
 
-    const [allDepts, setAllDepts] = useState([]); // 드롭다운용 전체 부서 리스트
-
-    // 2. 부서 선택 시 또는 컴포넌트 로드 시 데이터 동기화
     useEffect(() => {
-        // 부서 목록 최신화 (상위 부서 드롭다운용)
+        // 모든 부서 목록 로드 (상위 부서 선택 Select Box용)
         axios.get("/back/hyun/dept/selectAll", { withCredentials: true })
             .then(res => setAllDepts(res.data))
             .catch(err => console.error("부서 목록 로딩 실패", err));
 
         if (selectedDept) {
             if (selectedDept.isNew) {
-                // 신규 등록 모드
+                setActiveTab("edit");
                 setForm({
                     deptNo: "",
                     deptName: "",
@@ -32,43 +33,37 @@ const DeptDetail = ({ selectedDept, onSuccess }) => {
                     treeLevel: 0,
                     siblingOrder: 1
                 });
+                setDeptEmployees([]);
+                setHistory([]);
             } else {
-                // 수정 모드: 전달받은 객체를 폼에 세팅
+                setActiveTab("info");
                 setForm({
                     ...selectedDept,
-                    // parentDeptNo가 null인 경우 빈 문자열로 처리 (select 태그 호환)
                     parentDeptNo: selectedDept.parentDeptNo || ""
                 });
+
+                // 사원 목록 조회
+                axios.get(`/back/hyun/emp/selectEmpByDeptNo?deptno=${selectedDept.deptNo}`)
+                    .then(res => setDeptEmployees(res.data));
+
+                // 변경 이력 조회 (수정된 엔드포인트: selectHistory)
+                axios.get(`/back/hyun/dept/selectHistory?deptNo=${selectedDept.deptNo}`)
+                    .then(res => setHistory(res.data));
             }
         }
     }, [selectedDept]);
 
-    if (!selectedDept) {
-        return (
-            <div style={{ padding: "20px", color: "#999", textAlign: "center", border: "1px dashed #ccc" }}>
-                좌측 조직도에서 부서를 선택하거나 <br /> [새 부서 등록] 버튼을 클릭해 주세요.
-            </div>
-        );
-    }
-
-    // 3. 입력값 핸들러
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setForm(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setForm(prev => ({ ...prev, [name]: value }));
     };
 
-    // 4. 저장 로직 (등록/수정 통합)
     const handleSave = async () => {
-        const isNew = selectedDept.isNew;
-        const url = isNew ? "/back/hyun/dept/insert" : "/back/hyun/dept/update";
+        const url = selectedDept.isNew ? "/back/hyun/dept/insert" : "/back/hyun/dept/update";
 
-        // 데이터 정제: 날짜 포맷 에러 방지를 위해 날짜 필드 제외 및 숫자 형변환
-        const { createdAt, updatedAt, ...pureData } = form;
+        // 정수형 변환 처리
         const submitData = {
-            ...pureData,
+            ...form,
             deptNo: parseInt(form.deptNo),
             parentDeptNo: form.parentDeptNo === "" ? null : parseInt(form.parentDeptNo),
             siblingOrder: parseInt(form.siblingOrder || 1)
@@ -76,140 +71,142 @@ const DeptDetail = ({ selectedDept, onSuccess }) => {
 
         try {
             await axios({
-                method: isNew ? "post" : "put",
+                method: selectedDept.isNew ? "post" : "put",
                 url,
                 data: submitData,
                 withCredentials: true
             });
-            alert(isNew ? "새 부서가 조직도에 등록되었습니다." : "부서 정보가 수정되었습니다.");
-            onSuccess(); // 부모 컴포넌트의 리스트 새로고침 함수 호출
-        } catch (err) {
-            console.error("저장 실패:", err);
-            alert("저장에 실패했습니다. 부서 번호 중복이나 입력값을 확인하세요.");
-        }
-    };
-
-    // 5. 삭제 로직
-    const handleDelete = async () => {
-        if (!window.confirm(`[${form.deptName}] 부서를 삭제하시겠습니까?`)) return;
-
-        try {
-            await axios.delete("/back/hyun/dept/delete", {
-                data: { deptNo: form.deptNo },
-                withCredentials: true
-            });
-            alert("삭제되었습니다.");
+            alert("저장되었습니다.");
             onSuccess();
         } catch (err) {
-            console.error("삭제 실패:", err);
-            alert("삭제 실패: 하위 부서가 있거나 권한이 없을 수 있습니다.");
+            // 백엔드에서 보낸 에러 메시지가 있다면 해당 메시지를 출력
+            const errorMsg = err.response?.data?.message || "저장에 실패했습니다.";
+            alert(errorMsg);
+            console.error(err);
         }
     };
 
+    // ★ 에러 방지를 위한 추가 (return 문 바로 위에 배치)
+    if (!selectedDept) {
+        return (
+            <div className="card shadow-sm border-0 d-flex align-items-center justify-content-center" style={{ minHeight: "400px" }}>
+                <div className="text-center text-muted">
+                    <p>부서를 선택하거나 새로운 부서를 등록해 주세요.</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div style={{ padding: "10px" }}>
-            <h3>{selectedDept.isNew ? "✨ 신규 부서 추가" : `📝 부서 정보 수정 (${form.deptName})`}</h3>
-            <p style={{ fontSize: "0.85rem", color: "#666" }}>
-                * 트리 레벨은 상위 부서 설정에 따라 자동으로 계산됩니다.
-            </p>
-            <hr />
-
-            <div style={{ display: "grid", gridTemplateColumns: "150px 1fr", gap: "15px", marginTop: "20px" }}>
-                <label><strong>부서 번호 (ID)</strong></label>
-                <input
-                    name="deptNo"
-                    type="number"
-                    value={form.deptNo}
-                    onChange={handleChange}
-                    disabled={!selectedDept.isNew}
-                    placeholder="예: 100"
-                    style={{ padding: "8px", backgroundColor: !selectedDept.isNew ? "#f0f0f0" : "white" }}
-                />
-
-                <label><strong>부서명</strong></label>
-                <input
-                    name="deptName"
-                    value={form.deptName}
-                    onChange={handleChange}
-                    placeholder="예: 개발팀"
-                    style={{ padding: "8px" }}
-                />
-
-                <label><strong>부서 위치</strong></label>
-                <input
-                    name="deptLoc"
-                    value={form.deptLoc}
-                    onChange={handleChange}
-                    placeholder="예: 서울 본사 3층"
-                    style={{ padding: "8px" }}
-                />
-
-                <label><strong>상위 부서</strong></label>
-                <select
-                    name="parentDeptNo"
-                    value={form.parentDeptNo}
-                    onChange={handleChange}
-                    style={{ padding: "8px" }}
-                >
-                    <option value="">최상위 부서 (없음)</option>
-                    {allDepts
-                        .filter(d => d.deptNo !== form.deptNo) // 자기 자신을 상위 부서로 선택 방지
-                        .map(d => (
-                            <option key={d.deptNo} value={d.deptNo}>
-                                {"--".repeat(d.treeLevel)} {d.deptName}
-                            </option>
-                        ))
-                    }
-                </select>
-
-                <label><strong>출력 순서 (왼쪽기준)</strong></label>
-                <input
-                    name="siblingOrder"
-                    type="number"
-                    value={form.siblingOrder}
-                    onChange={handleChange}
-                    placeholder="1부터 입력"
-                    style={{ padding: "8px" }}
-                />
-
-                <label>현재 트리 레벨</label>
-                <input
-                    value={form.treeLevel}
-                    readOnly
-                    style={{ padding: "8px", backgroundColor: "#f9f9f9", border: "1px solid #ddd" }}
-                />
+        <div className="card shadow-sm border-0">
+            {/* 탭 네비게이션 */}
+            <div className="card-header bg-white pt-3">
+                <ul className="nav nav-tabs border-0">
+                    <li className="nav-item">
+                        <button className={`nav-link border-0 ${activeTab === 'info' ? 'active fw-bold border-bottom border-primary border-3' : ''}`}
+                                onClick={() => setActiveTab("info")} disabled={selectedDept?.isNew}>부서 정보 및 인원</button>
+                    </li>
+                    <li className="nav-item">
+                        <button className={`nav-link border-0 ${activeTab === 'edit' ? 'active fw-bold border-bottom border-primary border-3' : ''}`}
+                                onClick={() => setActiveTab("edit")}>{selectedDept?.isNew ? "부서 등록" : "정보 수정"}</button>
+                    </li>
+                    <li className="nav-item">
+                        <button className={`nav-link border-0 ${activeTab === 'history' ? 'active fw-bold border-bottom border-primary border-3' : ''}`}
+                                onClick={() => setActiveTab("history")} disabled={selectedDept?.isNew}>변경 이력</button>
+                    </li>
+                </ul>
             </div>
 
-            <div style={{ marginTop: "40px", display: "flex", gap: "12px" }}>
-                <button
-                    onClick={handleSave}
-                    style={{
-                        padding: "10px 25px",
-                        backgroundColor: "#28a745",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        fontWeight: "bold",
-                        cursor: "pointer"
-                    }}
-                >
-                    {selectedDept.isNew ? "부서 등록" : "수정사항 저장"}
-                </button>
+            <div className="card-body p-4">
+                {/* 탭 1: 정보 및 인원 */}
+                {activeTab === "info" && (
+                    <div>
+                        <div className="p-3 bg-light rounded border mb-4">
+                            <div className="row">
+                                <div className="col-4"><strong>부서명:</strong> {form.deptName}</div>
+                                <div className="col-4"><strong>위치:</strong> {form.deptLoc}</div>
+                                <div className="col-4"><strong>레벨:</strong> {form.treeLevel}</div>
+                            </div>
+                        </div>
+                        <h6 className="text-secondary mb-3">소속 사원 명단 <span className="badge bg-primary">{deptEmployees.length}명</span></h6>
+                        <table className="table border" style={{ fontSize: "14px" }}>
+                            <thead className="table-light">
+                            <tr><th>사번</th><th>이름</th><th>직급</th><th>입사일</th></tr>
+                            </thead>
+                            <tbody>
+                            {deptEmployees.map(emp => (
+                                <tr key={emp.empId}>
+                                    <td>{emp.empId}</td><td>{emp.empName}</td><td>{emp.empRole}</td><td>{emp.hireDate}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
 
-                {!selectedDept.isNew && (
-                    <button
-                        onClick={handleDelete}
-                        style={{
-                            padding: "10px 25px",
-                            backgroundColor: "#fff",
-                            color: "#dc3545",
-                            border: "1px solid #dc3545",
-                            borderRadius: "4px",
-                            cursor: "pointer"
-                        }}
-                    >
-                        부서 삭제
-                    </button>
+                {/* 탭 2: 정보 수정 (트리 구조 입력 포함) */}
+                {activeTab === "edit" && (
+                    <div className="row g-3">
+                        <div className="col-md-6">
+                            <label className="form-label small fw-bold">부서 번호</label>
+                            <input name="deptNo" type="number" className="form-control" value={form.deptNo} onChange={handleChange} disabled={!selectedDept.isNew} />
+                        </div>
+                        <div className="col-md-6">
+                            <label className="form-label small fw-bold">부서명</label>
+                            <input name="deptName" className="form-control" value={form.deptName} onChange={handleChange} />
+                        </div>
+                        <div className="col-md-12">
+                            <label className="form-label small fw-bold">부서 위치</label>
+                            <input name="deptLoc" className="form-control" value={form.deptLoc} onChange={handleChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label className="form-label small fw-bold">상위 부서</label>
+                            <select name="parentDeptNo" className="form-select" value={form.parentDeptNo} onChange={handleChange}>
+                                <option value="">최상위 부서 (없음)</option>
+                                {allDepts.filter(d => d.deptNo !== parseInt(form.deptNo)).map(d => (
+                                    <option key={d.deptNo} value={d.deptNo}>
+                                        {"--".repeat(d.treeLevel)} {d.deptName}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label small fw-bold">정렬 순서</label>
+                            <input name="siblingOrder" type="number" className="form-control" value={form.siblingOrder} onChange={handleChange} />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label small fw-bold">트리 레벨 (자동)</label>
+                            <input className="form-control bg-light" value={form.treeLevel} readOnly />
+                        </div>
+                        <div className="mt-4">
+                            <button onClick={handleSave} className="btn btn-primary px-4">저장하기</button>
+                        </div>
+                    </div>
+                )}
+
+                {/* 탭 3: 변경 이력 */}
+                {activeTab === "history" && (
+                    <div className="table-responsive border rounded">
+                        <table className="table table-hover mb-0" style={{ fontSize: "13px" }}>
+                            <thead className="table-light">
+                            <tr><th>변경일시</th><th>항목</th><th>상세 내용</th><th>담당자</th></tr>
+                            </thead>
+                            <tbody>
+                            {history.map(h => (
+                                <tr key={h.deptHistoryId}>
+                                    <td style={{ whiteSpace: 'nowrap' }}>{h.createdAt || "일시없음"}</td>
+                                    <td className="fw-bold text-secondary">{h.fieldName}</td>
+                                    <td>
+                                        <span className="text-muted text-decoration-line-through me-2">{h.beforeValue || "없음"}</span>
+                                        <span className="text-primary fw-bold">→ {h.afterValue}</span>
+                                    </td>
+                                    <td>{h.changerId}</td>
+                                </tr>
+                            ))}
+                            {history.length === 0 && <tr><td colSpan="4" className="text-center py-5">기록된 이력이 없습니다.</td></tr>}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
         </div>

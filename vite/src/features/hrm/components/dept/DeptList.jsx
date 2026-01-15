@@ -78,7 +78,7 @@ const DeptList = ({ onSelectDept }) => {
 
     return (
         <div style={{ padding: "10px" }}>
-            <h4 style={{ marginBottom: "15px", paddingLeft: "5px" }}>🏢 조직도 현황</h4>
+            <h4 style={{ marginBottom: "15px", paddingLeft: "5px" }}>조직도 현황</h4>
             {treeData.length > 0 ? (
                 renderNodes(treeData)
             ) : (

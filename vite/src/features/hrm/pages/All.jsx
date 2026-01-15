@@ -41,7 +41,7 @@ const All = () => {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h2 style={{ marginBottom: "25px" }}>📊 인사 종합 대시보드</h2>
+            <h2 style={{ marginBottom: "25px" }}>인사 종합 대시보드</h2>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px", marginBottom: "30px" }}>
                 <div style={cardStyle}>
@@ -60,7 +60,7 @@ const All = () => {
 
             <div style={{ display: "flex", gap: "20px" }}>
                 <div style={{ flex: 1, border: "1px solid #eee", padding: "20px", borderRadius: "8px", backgroundColor: "#fff" }}>
-                    <h4>🔔 인사 관리 알림</h4>
+                    <h4>인사 관리 알림</h4>
                     <ul style={{ listStyle: "none", padding: 0, marginTop: "15px" }}>
                         <li style={itemStyle}>🔹 신규 입사자 승인 대기 : 2건</li>
                         <li style={itemStyle}>🔹 파견 종료 예정 사원 (7일 이내) : {summary.activeAssignment}명</li>
@@ -69,7 +69,7 @@ const All = () => {
                 </div>
 
                 <div style={{ flex: 1, border: "1px solid #eee", padding: "20px", borderRadius: "8px", backgroundColor: "#fff" }}>
-                    <h4>🏢 부서별 인원 현황</h4>
+                    <h4>부서별 인원 현황</h4>
                     <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "15px" }}>
                         <thead>
                         <tr style={{ textAlign: "left", borderBottom: "2px solid #f4f4f4", color: "#888" }}>

@@ -31,4 +31,8 @@ public class EmpController {
     public void deleteEmpById(@RequestBody EmpDto empDto){
         empService.deleteEmp(empDto.getEmpId());
     }
+    @GetMapping("/selectEmpByDeptNo")
+    public List<EmpDto> selectEmpByDeptNo(@RequestParam Integer deptno){
+        return empService.selectEmpByDeptNo(deptno);
+    }
 }

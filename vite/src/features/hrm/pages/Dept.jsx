@@ -13,26 +13,29 @@ const Dept = () => {
     };
 
     return (
-        <div style={{ display: "flex", height: "calc(100vh - 100px)", gap: "20px", padding: "20px" }}>
-            {/* 1. 좌측 부서 트리 영역 */}
-            <div style={{ width: "350px", display: "flex", flexDirection: "column", border: "1px solid #eee", borderRadius: "8px", padding: "15px", backgroundColor: "#f9f9f9" }}>
-                <button
-                    onClick={() => setSelectedDept({ isNew: true })}
-                    style={{ marginBottom: "15px", padding: "10px", backgroundColor: "#4A90E2", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
-                >
-                    + 새 부서 등록
-                </button>
-                <div style={{ overflowY: "auto", flex: 1 }}>
-                    <DeptList key={refreshKey} onSelectDept={setSelectedDept} />
+        <div style={{padding: "20px"}}>
+            <h2>부서 관리</h2>
+            <div style={{ display: "flex", height: "calc(100vh - 100px)", gap: "20px"}}>
+                {/* 1. 좌측 부서 트리 영역 */}
+                <div style={{ width: "350px", display: "flex", flexDirection: "column", border: "1px solid #eee", borderRadius: "8px", padding: "15px", backgroundColor: "#f9f9f9" }}>
+                    <button
+                        onClick={() => setSelectedDept({ isNew: true })}
+                        style={{ marginBottom: "15px", padding: "10px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold" }}
+                    >
+                        + 새 부서 등록
+                    </button>
+                    <div style={{ overflowY: "auto", flex: 1 }}>
+                        <DeptList key={refreshKey} onSelectDept={setSelectedDept} />
+                    </div>
                 </div>
-            </div>
-
-            {/* 2. 우측 상세 설정 영역 */}
-            <div style={{ flex: 1, border: "1px solid #eee", borderRadius: "8px", padding: "20px" }}>
-                <DeptDetail
-                    selectedDept={selectedDept}
-                    onSuccess={handleSuccess}
-                />
+    
+                {/* 2. 우측 상세 설정 영역 */}
+                <div style={{ flex: 1, border: "1px solid #eee", borderRadius: "8px", padding: "20px" }}>
+                    <DeptDetail
+                        selectedDept={selectedDept}
+                        onSuccess={handleSuccess}
+                    />
+                </div>
             </div>
         </div>
     );
