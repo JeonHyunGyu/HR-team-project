@@ -4,6 +4,7 @@ import ProjectMemberModal from "../components/ProjectMemberModal.jsx";
 import ProjectFormModal from "../components/ProjectFormModal.jsx";
 
 import { Card, Button, Row, Col, Badge } from "react-bootstrap";
+import "../styles/project.css"
 
 const Project = () => {
     const [projects, setProjects] = useState([]);
@@ -30,7 +31,6 @@ const Project = () => {
         status: ""
     });
 
-    /* ================= 프로젝트 조회 (페이징 + 검색) ================= */
     const fetchProjects = async (pageNumber = 0, keyword = searchText) => {
         try {
             const res = await axios.get("/back/project", {
@@ -49,24 +49,19 @@ const Project = () => {
         }
     };
 
-    /* ================= 최초 조회 ================= */
     useEffect(() => {
         fetchProjects(0);
     }, []);
 
-    /* ================= 실시간 검색 ================= */
     useEffect(() => {
-        // 검색어 바뀌면 항상 첫 페이지부터
         fetchProjects(0, searchText);
     }, [searchText]);
 
-    /* ================= 입력 ================= */
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm(prev => ({ ...prev, [name]: value }));
     };
 
-    /* ================= 생성 ================= */
     const openCreateModal = () => {
         setMode("create");
         setEditId(null);
@@ -81,7 +76,6 @@ const Project = () => {
         setShowFormModal(true);
     };
 
-    /* ================= 수정 ================= */
     const openEditModal = (p) => {
         setMode("edit");
         setEditId(p.id);
@@ -96,7 +90,6 @@ const Project = () => {
         setShowFormModal(true);
     };
 
-    /* ================= 저장 ================= */
     const handleSubmit = async () => {
         try {
             if (mode === "create") {
@@ -113,7 +106,6 @@ const Project = () => {
         }
     };
 
-    /* ================= 삭제 ================= */
     const handleDelete = async (id) => {
         if (!window.confirm("삭제하시겠습니까?")) return;
 
@@ -132,109 +124,125 @@ const Project = () => {
     };
 
     return (
-        <>
+        <div className="page-wrapper">
 
+            {/* ===== 상단 영역 (검색 + 생성 버튼) ===== */}
+            <div className="content-wrapper">
+                <h2>프로젝트 생성</h2>
 
-            {/* 🔹 상단 검색 + 생성 */}
-            <div className="meeting-top-bar mb-4">
-                <div className="meeting-search-group">
-                    <input
-                        type="text"
-                        className="meeting-search-input"
-                        placeholder="프로젝트 이름 검색"
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                    />
-                    <Button onClick={openCreateModal}>
-                        새 프로젝트 생성
-                    </Button>
+                <div className="meeting-top-bar">
+                    <div className="meeting-search-group">
+                        <input
+                            type="text"
+                            className="meeting-search-input"
+                            placeholder="프로젝트 이름 검색"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                        />
+                        <Button className="fc-like-btn" onClick={openCreateModal}>
+                            새 프로젝트 생성
+                        </Button>
+                    </div>
                 </div>
             </div>
 
-            {/* 🔹 프로젝트 카드 */}
-            <div className="meeting-room-wrapper">
-                <Row xs={1} md={2} lg={3} className="g-4">
-                    {projects.map(p => (
-                        <Col key={p.id}>
-                            <Card className="h-100 shadow-sm">
-                                <Card.Header className="d-flex justify-content-between align-items-center">
-                                    <strong>{p.name}</strong>
-                                    <div className="d-flex gap-2">
-                                        <Badge bg="secondary">{p.methodology}</Badge>
-                                        <Badge bg="info">{p.status}</Badge>
-                                    </div>
-                                </Card.Header>
+            <div className="section-gap" />
 
-                                <Card.Body>
-                                    <Card.Text>{p.description}</Card.Text>
+            {/* ===== 카드 영역 ===== */}
+            <div className="content-wrapper">
+                {projects.length === 0 ? (
+                    /* 🔹 카드 grid 밖 → 진짜 중앙 */
+                    <div className="empty-projects text-center py-5">
+                        프로젝트가 없습니다.
+                    </div>
+                ) : (
+                    <>
+                        <Row xs={1} md={2} lg={3} className="g-4">
+                            {projects.map(p => (
+                                <Col key={p.id}>
+                                    <Card className="h-100 shadow-sm">
+                                        <Card.Header className="d-flex justify-content-between align-items-center">
+                                            <strong>{p.name}</strong>
+                                            <div className="d-flex gap-2">
+                                                <Badge bg="secondary">{p.methodology}</Badge>
+                                                <Badge bg="secondary">{p.status}</Badge>
+                                            </div>
+                                        </Card.Header>
 
-                                    <Row className="text-muted small">
-                                        <Col>
-                                            <strong>시작일</strong><br />
-                                            {p.startDate}
-                                        </Col>
-                                        <Col>
-                                            <strong>종료일</strong><br />
-                                            {p.endDate}
-                                        </Col>
-                                    </Row>
-                                </Card.Body>
+                                        <Card.Body>
+                                            <Card.Text>
+                                                {p.description}
+                                            </Card.Text>
 
-                                <Card.Footer className="bg-white border-0">
-                                    <div className="d-flex justify-content-end gap-2">
-                                        <Button
-                                            size="sm"
-                                            variant="outline-secondary"
-                                            onClick={() => openEditModal(p)}
-                                        >
-                                            수정
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="outline-danger"
-                                            onClick={() => handleDelete(p.id)}
-                                        >
-                                            삭제
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="primary"
-                                            onClick={() => setSelectedProjectId(p.id)}
-                                        >
-                                            참여자
-                                        </Button>
-                                    </div>
-                                </Card.Footer>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
+                                            <Row className="text-muted small">
+                                                <Col>
+                                                    <strong>시작일</strong><br />
+                                                    {p.startDate?.slice(0, 10)}
+                                                </Col>
+                                                <Col>
+                                                    <strong>종료일</strong><br />
+                                                    {p.endDate?.slice(0, 10)}
+                                                </Col>
+                                            </Row>
+                                        </Card.Body>
+
+                                        <Card.Footer className="bg-white border-0">
+                                            <div className="d-flex justify-content-end gap-2">
+                                                <Button
+                                                    size="sm"
+                                                    variant="secondary"
+                                                    onClick={() => openEditModal(p)}
+                                                >
+                                                    수정
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="danger"
+                                                    onClick={() => handleDelete(p.id)}
+                                                >
+                                                    삭제
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    className="fc-like-btn"
+                                                    onClick={() => setSelectedProjectId(p.id)}
+                                                >
+                                                    참여자
+                                                </Button>
+                                            </div>
+                                        </Card.Footer>
+                                    </Card>
+                                </Col>
+                            ))}
+                        </Row>
+
+                        {/* ===== 페이지네이션 ===== */}
+                        <div className="d-flex justify-content-center align-items-center mt-4 gap-3">
+                            <Button
+                                size="sm"
+                                variant="secondary"
+                                disabled={page === 0}
+                                onClick={() => fetchProjects(page - 1)}
+                            >
+                                이전
+                            </Button>
+
+                            <span>{page + 1} / {totalPages}</span>
+
+                            <Button
+                                size="sm"
+                                variant="secondary"
+                                disabled={page === totalPages - 1}
+                                onClick={() => fetchProjects(page + 1)}
+                            >
+                                다음
+                            </Button>
+                        </div>
+                    </>
+                )}
             </div>
 
-            {/* 🔹 페이지네이션 */}
-            <div className="d-flex justify-content-center align-items-center mt-4 gap-3">
-                <Button
-                    size="sm"
-                    variant="outline-secondary"
-                    disabled={page === 0}
-                    onClick={() => fetchProjects(page - 1)}
-                >
-                    이전
-                </Button>
-
-                <span>{page + 1} / {totalPages}</span>
-
-                <Button
-                    size="sm"
-                    variant="outline-secondary"
-                    disabled={page === totalPages - 1}
-                    onClick={() => fetchProjects(page + 1)}
-                >
-                    다음
-                </Button>
-            </div>
-
-            {/* 참여자 모달 */}
+            {/* ===== 참여자 모달 ===== */}
             {selectedProjectId && (
                 <ProjectMemberModal
                     projectId={selectedProjectId}
@@ -242,7 +250,7 @@ const Project = () => {
                 />
             )}
 
-            {/* 생성 / 수정 모달 */}
+            {/* ===== 생성 / 수정 모달 ===== */}
             <ProjectFormModal
                 show={showFormModal}
                 mode={mode}
@@ -251,8 +259,9 @@ const Project = () => {
                 onSubmit={handleSubmit}
                 onClose={() => setShowFormModal(false)}
             />
-        </>
+        </div>
     );
+
 };
 
 export default Project;

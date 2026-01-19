@@ -54,6 +54,32 @@ public class AccountController {
 
         return result;
     }
+    // =========================
+    // 비밀번호 변경
+    // =========================
+    @PutMapping("/password")
+    public ResponseEntity<?> changePassword(
+            @AuthenticationPrincipal CustomUserDetails user,
+            @RequestBody AccountDTO request
+    ) {
+        accountService.changePassword(
+                user.getAccount().getId(),
+                request.getCurrentPassword(),
+                request.getNewPassword()
+        );
 
+        return ResponseEntity.ok("비밀번호 변경 완료");
+    }
+
+    // =========================
+    // 회원 탈퇴
+    // =========================
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteAccount(
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
+        accountService.deleteAccount(user.getAccount().getId());
+        return ResponseEntity.ok("회원 탈퇴 완료");
+    }
 
 }

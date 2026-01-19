@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, Button, Table, Form, Row, Col } from "react-bootstrap";
 import "../styles/projectMemberModal.css";
-
+import "../styles/project.css"
 const ProjectMemberModal = ({ projectId, onClose }) => {
     const [members, setMembers] = useState([]);
     const [form, setForm] = useState({
@@ -14,6 +14,15 @@ const ProjectMemberModal = ({ projectId, onClose }) => {
         const res = await axios.get(`/back/project-members/${projectId}`);
         setMembers(res.data);
     };
+
+    const ROLE_OPTIONS = [
+        { value: "PM", label: "PM (Project Manager)" },
+        { value: "PL", label: "PL (Project Leader)" },
+        { value: "FE", label: "FE (Frontend)" },
+        { value: "BE", label: "BE (Backend)" },
+        { value: "AI", label: "AI Engineer" }
+    ];
+
 
     useEffect(() => {
         if (projectId) fetchMembers();
@@ -91,15 +100,22 @@ const ProjectMemberModal = ({ projectId, onClose }) => {
                                 />
                             </Col>
                             <Col md={4}>
-                                <Form.Control
-                                    placeholder="역할"
+                                <Form.Select
                                     name="role"
                                     value={form.role}
                                     onChange={handleChange}
-                                />
+                                >
+                                    <option value="">역할 선택</option>
+                                    {ROLE_OPTIONS.map(r => (
+                                        <option key={r.value} value={r.value}>
+                                            {r.label}
+                                        </option>
+                                    ))}
+                                </Form.Select>
                             </Col>
+
                             <Col md={4}>
-                                <Button className="w-100" onClick={addMember}>
+                                <Button className="w-100 fc-like-btn" onClick={addMember}>
                                     추가
                                 </Button>
                             </Col>
@@ -136,25 +152,32 @@ const ProjectMemberModal = ({ projectId, onClose }) => {
                                         <td>{m.empName}</td>
                                         <td>{m.empEmail}</td>
                                         <td>
-                                            <Form.Control
+                                            <Form.Select
                                                 size="sm"
                                                 value={m.role}
                                                 onChange={(e) =>
                                                     handleRoleChange(m.id, e.target.value)
                                                 }
-                                            />
+                                            >
+                                                {ROLE_OPTIONS.map(r => (
+                                                    <option key={r.value} value={r.value}>
+                                                        {r.label}
+                                                    </option>
+                                                ))}
+                                            </Form.Select>
                                         </td>
+
                                         <td className="text-center">
                                             <Button
                                                 size="sm"
-                                                variant="outline-primary"
+                                                variant="secondary"
                                                 onClick={() => updateMember(m.id)}
                                             >
                                                 수정
                                             </Button>
                                             <Button
                                                 size="sm"
-                                                variant="outline-danger"
+                                                variant="danger"
                                                 className="ms-2"
                                                 onClick={() => deleteMember(m.id)}
                                             >

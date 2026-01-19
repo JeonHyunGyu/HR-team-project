@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "../styles/meetingRoomModal.css";
-
+import "../styles/project.css"
 const MeetingRoomModal = ({ room, onClose, onSuccess }) => {
     const isEdit = !!room;
 
@@ -47,50 +46,95 @@ const MeetingRoomModal = ({ room, onClose, onSuccess }) => {
     };
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-box">
-                <h4>{isEdit ? "회의실 수정" : "회의실 생성"}</h4>
+        <>
+            {/* backdrop */}
+            <div className="modal-backdrop fade show" />
 
-                <div className="form-group">
-                    <label>ID</label>
-                    <input
-                        name="meetingRoomId"
-                        value={form.meetingRoomId}
-                        onChange={handleChange}
-                        readOnly={isEdit}
-                    />
-                </div>
+            <div
+                className="modal fade show"
+                style={{ display: "block" }}
+                tabIndex="-1"
+            >
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
 
-                <div className="form-group">
-                    <label>이름</label>
-                    <input name="name" value={form.name} onChange={handleChange} />
-                </div>
+                        {/* ===== header ===== */}
+                        <div className="modal-header">
+                            <h5 className="modal-title">
+                                {isEdit ? "회의실 수정" : "회의실 생성"}
+                            </h5>
+                            <button
+                                type="button"
+                                className="btn-close"
+                                onClick={onClose}
+                            />
+                        </div>
 
-                <div className="form-group">
-                    <label>위치</label>
-                    <input name="location" value={form.location} onChange={handleChange} />
-                </div>
+                        {/* ===== body ===== */}
+                        <div className="modal-body">
+                            <div className="mb-3">
+                                <label className="form-label">ID</label>
+                                <input
+                                    className="form-control"
+                                    name="meetingRoomId"
+                                    value={form.meetingRoomId}
+                                    onChange={handleChange}
+                                    readOnly={isEdit}
+                                />
+                            </div>
 
-                <div className="form-group">
-                    <label>수용 인원</label>
-                    <input
-                        name="capacity"
-                        type="number"
-                        value={form.capacity}
-                        onChange={handleChange}
-                    />
-                </div>
+                            <div className="mb-3">
+                                <label className="form-label">이름</label>
+                                <input
+                                    className="form-control"
+                                    name="name"
+                                    value={form.name}
+                                    onChange={handleChange}
+                                />
+                            </div>
 
-                <div className="modal-actions">
-                    <button className="btn-secondary" onClick={onClose}>
-                        취소
-                    </button>
-                    <button className="btn-primary" onClick={handleSubmit}>
-                        {isEdit ? "수정" : "생성"}
-                    </button>
+                            <div className="mb-3">
+                                <label className="form-label">위치</label>
+                                <input
+                                    className="form-control"
+                                    name="location"
+                                    value={form.location}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">수용 인원</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    name="capacity"
+                                    value={form.capacity}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+
+                        {/* ===== footer ===== */}
+                        <div className="modal-footer">
+                            <button
+                                className="btn btn-secondary"
+                                onClick={onClose}
+                            >
+                                취소
+                            </button>
+                            <button
+                                className="btn fc-like-btn"
+                                onClick={handleSubmit}
+                            >
+                                {isEdit ? "수정" : "생성"}
+                            </button>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

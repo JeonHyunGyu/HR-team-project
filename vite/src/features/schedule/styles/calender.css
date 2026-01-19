@@ -32,3 +32,65 @@
     width: 100% !important;
     overflow: hidden; /* 영역 밖으로 나가는 것 방지 */
 }
+/* dot 이벤트 앞의 점 제거 */
+.fc-daygrid-event-dot {
+    display: none !important;
+}
+/* 요일 밑줄 제거 */
+.fc .fc-col-header-cell-cushion {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+/* 날짜 숫자 밑줄 제거 */
+.fc .fc-daygrid-day-number {
+    text-decoration: none !important;
+    color: inherit;
+}
+/* 요일 헤더 배경 회색 */
+.fc .fc-col-header {
+    background-color: #f1f3f5; /* 연한 회색 */
+}
+
+/* 요일 셀 */
+.fc .fc-col-header-cell {
+    background-color: #f1f3f5;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* 요일 텍스트 */
+.fc .fc-col-header-cell-cushion {
+    font-weight: 600;
+    color: #495057;
+}
+
+/* 캘린더 카드 안에서 여백 최소화 */
+.content-wrapper .fc {
+    margin-top: 4px;
+}
+
+/* header 버튼 영역 조금 컴팩트하게 */
+.fc .fc-toolbar {
+    margin-bottom: 8px;
+}
+
+/* 날짜 셀 패딩 줄이기 */
+.fc-daygrid-day-frame {
+    padding: 2px;
+}
+/* 상단 전체 여백 최소화 */
+.fc .fc-header-toolbar {
+    margin: 0px 0 0px 0 !important;
+    padding: 0 !important;
+}
+/* 요일 헤더 전체 높이 줄이기 */
+.fc .fc-col-header-cell {
+    padding: 2px 0 !important;
+}
+/* 캘린더 페이지 전용 */
+.page-wrapper {
+    padding-top: 0px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 30px;
+}

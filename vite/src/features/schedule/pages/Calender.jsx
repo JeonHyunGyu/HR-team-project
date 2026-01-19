@@ -1,5 +1,6 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import koLocale from "@fullcalendar/core/locales/ko";
 import interactionPlugin from "@fullcalendar/interaction";
 // 1. useRef를 import에 추가합니다.
 import { useEffect, useState, useRef } from "react";
@@ -10,7 +11,7 @@ import "../styles/calender.css";
 
 const Calendar = () => {
     const { user } = useAuth();
-
+    console.log(user.empId);
     // 2. 캘린더 API에 접근하기 위한 ref를 생성합니다.
     const calendarRef = useRef(null);
 
@@ -18,27 +19,82 @@ const Calendar = () => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [events, setEvents] = useState([]);
     const [daySchedules, setDaySchedules] = useState([]);
+    //필터
+    const [filters, setFilters] = useState({
+        all:true,
+        mine: true,
+        project: true,
+        vacation: true
+    });
 
-    /* 전체 일정 조회 */
+    const loadProjects = async () => {
+        try {
+            const res = await axios.get("/back/project/all");
+
+            return res.data.map(p => ({
+                id: `project-${p.id}`,      // 충돌 방지
+                title: `[프로젝트] ${p.name}`,
+                start: p.startDate,
+                end: p.endDate,
+                extendedProps: {
+                    type: "project"
+                },
+                color: "#198754" // 초록색 (선택)
+            }));
+        } catch (err) {
+            console.error(err);
+            return [];
+        }
+    };
+
+    /* 전체 일정 조회 + 필터링 */
     const loadSchedules = async () => {
         try {
-            const res = await axios.get("/back/schedules");
-            setEvents(
-                res.data.map(s => ({
-                    id: s.id,
-                    title: s.title,
-                    start: s.startAt,
-                    end: s.endAt
-                }))
-            );
+            const [scheduleRes, projectEvents] = await Promise.all([
+                axios.get("/back/schedules"),
+                loadProjects()
+            ]);
+
+            const scheduleEvents = scheduleRes.data.map(s => ({
+                id: `schedule-${s.id}`,
+                title: s.title,
+                start: s.startAt,
+                end: s.endAt,
+                extendedProps: {
+                    type: "schedule",
+                    empId: s.empId
+                }
+            }));
+
+            let filteredSchedules = [];
+
+            if (filters.all) {
+                filteredSchedules = scheduleEvents;
+            } else if (filters.mine) {
+                filteredSchedules = scheduleEvents.filter(
+                    e => e.extendedProps.empId === user.empId
+                );
+            }
+
+            const filteredProjects =
+                filters.all || filters.project
+                    ? projectEvents
+                    : [];
+
+            setEvents([
+                ...filteredSchedules,
+                ...filteredProjects
+            ]);
+
         } catch (err) {
             console.error(err);
         }
     };
 
+
     useEffect(() => {
         loadSchedules();
-    }, []);
+    }, [filters]);
 
     /* 날짜 클릭 → READ 전용 */
     const handleDateClick = async (info) => {
@@ -72,46 +128,142 @@ const Calendar = () => {
             }
         }, 100);
     };
+    //필터링 관리
+    const handleAllChange = (checked) => {
+        setFilters({
+            all: checked,
+            mine: checked,
+            project: checked,
+            vacation: checked
+        });
+    };
+
+    const handleSubFilterChange = (key, checked) => {
+        setFilters(prev => {
+
+            if (prev.all) {
+                return {
+                    all: false,
+                    mine: key === "mine",
+                    project: key === "project",
+                    vacation: key === "vacation"
+                };
+            }
+
+            const next = {
+                ...prev,
+                [key]: checked,
+                all: false
+            };
+
+            if (next.mine && next.project && next.vacation) {
+                next.all = true;
+            }
+
+            return next;
+        });
+    };
 
     return (
-        <>
-            <FullCalendar
-                ref={calendarRef} // 4. ref 연결
-                plugins={[dayGridPlugin, interactionPlugin]}
-                initialView="dayGridMonth"
-                events={events}
-                height="auto"
-                dateClick={handleDateClick}
-                handleWindowResize={true}
-                stickyHeaderDates={true}
-                customButtons={{
-                    addSchedule: {
-                        text: "+",
-                        click: () => {
-                            setSelectedDate(null);
-                            setDaySchedules([]);
-                            setShowModal(true);
-                        }
-                    }
-                }}
-                headerToolbar={{
-                    left: "addSchedule",
-                    center: "title",
-                    right: "prev,next today"
-                }}
-                dayMaxEvents={3}
-            />
+        <div className="page-wrapper">
 
+            {/* ===== 필터 + 캘린더 하나의 카드 ===== */}
+            <div className="content-wrapper p-2 calendar-wrapper">
+
+                {/* --- 필터 영역 --- */}
+                <div className="d-flex align-items-center gap-3 mb-1">
+                    <div className="fw-semibold">필터링</div>
+
+                    <div className="d-flex gap-3 ms-2 flex-wrap">
+                        <label className="d-flex align-items-center gap-1">
+                            <input
+                                type="checkbox"
+                                checked={filters.all}
+                                onChange={e => handleAllChange(e.target.checked)}
+                            />
+                            전체
+                        </label>
+
+                        <label className="d-flex align-items-center gap-1">
+                            <input
+                                type="checkbox"
+                                checked={filters.mine}
+                                onChange={e =>
+                                    handleSubFilterChange("mine", e.target.checked)
+                                }
+                            />
+                            내 일정만
+                        </label>
+
+                        <label className="d-flex align-items-center gap-1">
+                            <input
+                                type="checkbox"
+                                checked={filters.project}
+                                onChange={e =>
+                                    handleSubFilterChange("project", e.target.checked)
+                                }
+                            />
+                            프로젝트
+                        </label>
+
+                        <label className="d-flex align-items-center gap-1">
+                            <input
+                                type="checkbox"
+                                checked={filters.vacation}
+                                onChange={e =>
+                                    handleSubFilterChange("vacation", e.target.checked)
+                                }
+                            />
+                            휴가
+                        </label>
+                    </div>
+                </div>
+
+                {/* --- 캘린더 --- */}
+                <FullCalendar
+                    ref={calendarRef}
+                    plugins={[dayGridPlugin, interactionPlugin]}
+                    initialView="dayGridMonth"
+                    events={events}
+                    locale={koLocale}
+                    dateClick={handleDateClick}
+                    handleWindowResize={true}
+                    stickyHeaderDates={true}
+                    height="80vh"
+                    customButtons={{
+                        addSchedule: {
+                            text: "+ 일정",
+                            click: () => {
+                                setSelectedDate(null);
+                                setDaySchedules([]);
+                                setShowModal(true);
+                            }
+                        }
+                    }}
+                    headerToolbar={{
+                        left: "addSchedule",
+                        center: "title",
+                        right: "prev,next today"
+                    }}
+                    dayMaxEvents={3}
+                    eventTimeFormat={{
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false
+                    }}
+                />
+            </div>
+
+            {/* ===== 모달 ===== */}
             {showModal && (
                 <ScheduleModal
                     date={selectedDate}
                     schedules={daySchedules}
                     empId={user.empId}
                     autoCreate={selectedDate === null}
-                    onClose={handleCloseModal} // 5. 정의한 핸들러 연결
+                    onClose={handleCloseModal}
                     onChange={async () => {
                         await loadSchedules();
-
                         if (selectedDate) {
                             try {
                                 const res = await axios.get("/back/schedules");
@@ -121,16 +273,17 @@ const Calendar = () => {
                                     return start <= selectedDate && selectedDate <= end;
                                 });
                                 setDaySchedules(dayList);
-                            } catch (err) {
-                                console.error(err);
+                            } catch {
                                 setDaySchedules([]);
                             }
                         }
                     }}
                 />
             )}
-        </>
+        </div>
     );
+
+
 };
 
 export default Calendar;

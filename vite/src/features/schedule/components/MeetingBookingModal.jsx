@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "react-bootstrap";
 import "../styles/meetingBookingModal.css";
+import "../styles/project.css"
 import { useAuth } from "../../../main/AuthContext.jsx";
+
 
 const MeetingBookingModal = ({ room, booking, onClose, onSuccess }) => {
     const { user } = useAuth();
@@ -216,8 +218,7 @@ const MeetingBookingModal = ({ room, booking, onClose, onSuccess }) => {
                         />
                         <Button
                             size="sm"
-                            variant="outline-secondary"
-                            className="ms-2"
+                            className="ms-2 fc-like-btn"
                             onClick={() => setMyBookingModalOpen(true)}
                         >
                             내 예약 확인
@@ -254,7 +255,7 @@ const MeetingBookingModal = ({ room, booking, onClose, onSuccess }) => {
                         )}
 
                         <Button
-                            variant="primary"
+                            className="fc-like-btn"
                             onClick={handleReserve}
                             disabled={
                                 startHour === null ||
@@ -290,7 +291,7 @@ const MeetingBookingModal = ({ room, booking, onClose, onSuccess }) => {
                                 <div className="d-flex gap-1">
                                     <Button
                                         size="sm"
-                                        variant="outline-danger"
+                                        variant="danger"
                                         onClick={async () => {
                                             if (!window.confirm("삭제하시겠습니까?")) return;
                                             await axios.delete(`/back/booking/${b.id}`);

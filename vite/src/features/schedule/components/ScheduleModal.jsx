@@ -12,6 +12,17 @@ const ScheduleModal = ({ date, schedules, empId, onClose, onChange, autoCreate }
     const [endAt, setEndAt] = useState("");
     const [description, setDescription] = useState("");
 
+    const [showDescModal, setShowDescModal] = useState(false);
+    const [descContent, setDescContent] = useState("");
+
+
+    const formatTime = (dateStr) =>
+        new Date(dateStr).toLocaleTimeString("ko-KR", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        });
+
     useEffect(() => {
         setDaySchedules(schedules);
 
@@ -78,6 +89,7 @@ const ScheduleModal = ({ date, schedules, empId, onClose, onChange, autoCreate }
     };
 
     return (
+        <>
         <Modal
             show
             onHide={onClose}
@@ -111,9 +123,24 @@ const ScheduleModal = ({ date, schedules, empId, onClose, onChange, autoCreate }
                                         variant={s.empId === empId ? "light" : "secondary"}
                                     >
                                         <div>
-                                            <div className="fw-bold">{s.title}</div>
+                                            <div className="fw-bold d-flex align-items-center gap-2">
+                                                <span>{s.title}</span>
+                                                {s.description && (
+                                                    <span
+                                                        style={{ cursor: "pointer" }}
+                                                        title="메모 보기"
+                                                        onClick={() => {
+                                                            setDescContent(s.description);
+                                                            setShowDescModal(true);
+                                                        }}
+                                                    >
+                                                        📝
+                                                    </span>
+                                                )}
+                                            </div>
+
                                             <div className="small text-muted">
-                                                {s.startAt} ~ {s.endAt} <Badge bg="info">{s.empId}</Badge>
+                                                {formatTime(s.startAt)} ~ {formatTime(s.endAt)}
                                             </div>
                                         </div>
 
@@ -187,6 +214,23 @@ const ScheduleModal = ({ date, schedules, empId, onClose, onChange, autoCreate }
                 )}
             </Modal.Body>
         </Modal>
+            <Modal
+                show={showDescModal}
+                onHide={() => setShowDescModal(false)}
+                size="sm"
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>메모</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div style={{ whiteSpace: "pre-wrap" }}>
+                        {descContent}
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+        </>
     );
 };
 

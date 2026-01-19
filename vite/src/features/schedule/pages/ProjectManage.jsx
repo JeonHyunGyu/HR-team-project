@@ -5,6 +5,7 @@ import MemberViewModal from "../components/MemberViewModal.jsx";
 import ProjectDetailModal from "../components/ProjectDetailModal.jsx";
 
 import { Card, Button, Row, Col, Badge } from "react-bootstrap";
+import "../styles/project.css";
 
 const ProjectManage = () => {
     const { user } = useAuth();
@@ -48,34 +49,39 @@ const ProjectManage = () => {
 
     /* ================= 실시간 검색 ================= */
     useEffect(() => {
-        // 검색어 바뀌면 항상 0페이지부터
         setPage(0);
         fetchProjects(0);
     }, [searchText]);
 
     return (
-        <>
+        <div className="page-wrapper">
 
-
-            {/* 🔍 검색 영역 (Project.jsx와 동일한 느낌) */}
-            <div className="meeting-top-bar mb-4">
-                <div className="meeting-search-group">
-                    <input
-                        type="text"
-                        className="meeting-search-input"
-                        placeholder="프로젝트 이름 검색"
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                    />
+            {/* ===== 검색 영역 ===== */}
+            <div className="content-wrapper">
+                <h2>내 프로젝트 관리</h2>
+                <div className="meeting-top-bar">
+                    <div className="meeting-search-group">
+                        <input
+                            type="text"
+                            className="meeting-search-input"
+                            placeholder="프로젝트 이름 검색"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                        />
+                    </div>
                 </div>
             </div>
 
-            {projects.length === 0 ? (
-                <p>참여중인 프로젝트가 없습니다.</p>
-            ) : (
-                <>
-                    {/* 🔹 프로젝트 카드 영역 (회의실과 동일한 회색 박스) */}
-                    <div className="meeting-room-wrapper">
+            <div className="section-gap" />
+
+            {/* ===== 카드 영역 ===== */}
+            <div className="content-wrapper">
+                {projects.length === 0 ? (
+                    <div className="empty-projects text-center py-5">
+                        참여중인 프로젝트가 없습니다.
+                    </div>
+                ) : (
+                    <>
                         <Row xs={1} md={2} lg={3} className="g-4">
                             {projects.map(p => (
                                 <Col key={p.id}>
@@ -84,7 +90,7 @@ const ProjectManage = () => {
                                             <strong>{p.name}</strong>
                                             <div className="d-flex gap-2">
                                                 <Badge bg="secondary">{p.methodology}</Badge>
-                                                <Badge bg="info">{p.status}</Badge>
+                                                <Badge bg="secondary">{p.status}</Badge>
                                             </div>
                                         </Card.Header>
 
@@ -100,11 +106,11 @@ const ProjectManage = () => {
                                                 </Col>
                                                 <Col>
                                                     <strong>시작일</strong><br />
-                                                    {p.startDate}
+                                                    {p.startDate?.slice(0, 10)}
                                                 </Col>
                                                 <Col>
                                                     <strong>종료일</strong><br />
-                                                    {p.endDate}
+                                                    {p.endDate?.slice(0, 10)}
                                                 </Col>
                                             </Row>
                                         </Card.Body>
@@ -113,7 +119,7 @@ const ProjectManage = () => {
                                             <div className="d-flex justify-content-end gap-2">
                                                 <Button
                                                     size="sm"
-                                                    variant="outline-primary"
+                                                    variant="secondary"
                                                     onClick={() => {
                                                         setSelectedProjectId(p.id);
                                                         setViewType("members");
@@ -123,7 +129,7 @@ const ProjectManage = () => {
                                                 </Button>
                                                 <Button
                                                     size="sm"
-                                                    variant="primary"
+                                                    className="fc-like-btn"
                                                     onClick={() => {
                                                         setSelectedProjectId(p.id);
                                                         setViewType("projectDetail");
@@ -137,34 +143,34 @@ const ProjectManage = () => {
                                 </Col>
                             ))}
                         </Row>
-                    </div>
 
-                    {/* 페이징 */}
-                    <div className="d-flex justify-content-center align-items-center mt-4 gap-3">
-                        <Button
-                            size="sm"
-                            variant="outline-secondary"
-                            disabled={page === 0}
-                            onClick={() => setPage(page - 1)}
-                        >
-                            이전
-                        </Button>
+                        {/* ===== 페이징 ===== */}
+                        <div className="d-flex justify-content-center align-items-center mt-4 gap-3">
+                            <Button
+                                size="sm"
+                                variant="secondary"
+                                disabled={page === 0}
+                                onClick={() => setPage(page - 1)}
+                            >
+                                이전
+                            </Button>
 
-                        <span>{page + 1} / {totalPages}</span>
+                            <span>{page + 1} / {totalPages}</span>
 
-                        <Button
-                            size="sm"
-                            variant="outline-secondary"
-                            disabled={page === totalPages - 1}
-                            onClick={() => setPage(page + 1)}
-                        >
-                            다음
-                        </Button>
-                    </div>
-                </>
-            )}
+                            <Button
+                                size="sm"
+                                variant="secondary"
+                                disabled={page === totalPages - 1}
+                                onClick={() => setPage(page + 1)}
+                            >
+                                다음
+                            </Button>
+                        </div>
+                    </>
+                )}
+            </div>
 
-            {/* 참여자 모달 */}
+            {/* ===== 참여자 모달 ===== */}
             {selectedProjectId && viewType === "members" && (
                 <MemberViewModal
                     projectId={selectedProjectId}
@@ -172,7 +178,7 @@ const ProjectManage = () => {
                 />
             )}
 
-            {/* 프로젝트 상세 모달 */}
+            {/* ===== 프로젝트 상세 모달 ===== */}
             {selectedProjectId && viewType === "projectDetail" && (
                 <ProjectDetailModal
                     projectId={selectedProjectId}
@@ -180,7 +186,7 @@ const ProjectManage = () => {
                     projects={projects}
                 />
             )}
-        </>
+        </div>
     );
 };
 
