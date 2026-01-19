@@ -209,7 +209,7 @@ const Candidate = () => {
               className="type-button manual-button"
               onClick={() => handleSelectNominationType('MANUAL')}
             >
-              <div className="button-icon">👤</div>
+              <div className="button-icon">👍</div>
               <div className="button-title">수동 추천</div>
               <div className="button-description">직접 사원을 선택하여 추천합니다</div>
             </button>
@@ -217,7 +217,7 @@ const Candidate = () => {
               className="type-button ai-button"
               onClick={() => handleSelectNominationType('AI')}
             >
-              <div className="button-icon">🤖</div>
+              <div className="button-icon">🎰</div>
               <div className="button-title">AI 추천</div>
               <div className="button-description">AI가 최적의 후보를 추천합니다 (준비 중)</div>
             </button>
@@ -231,7 +231,7 @@ const Candidate = () => {
               <table className="nominations-table">
                 <thead>
                   <tr>
-                    <th>피추천자</th>
+                    <th>추천 대상</th>
                     <th>포상 정책</th>
                     <th>추천 사유</th>
                     <th>상태</th>
