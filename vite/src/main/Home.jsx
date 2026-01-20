@@ -210,12 +210,7 @@ const Home = () => {
 
                         </Nav>
                     </Col>
-                    {/*김민영이 수정함
-                    기존 디자인 아래거 쓰세요!
-                        <Col xs={10} className="main-content p-4">
-                            <Outlet />
-                        </Col>
-                    */}
+
                     {/* 메인 콘텐츠 */}
                     <Col className="main-content p-0">
                         <Outlet />
