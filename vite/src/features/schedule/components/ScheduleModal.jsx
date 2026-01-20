@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Modal, Button, ListGroup, Form, Row, Col, Badge } from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
+import "../styles/scheduleModal.css"
+
 
 const ScheduleModal = ({ date, schedules, empId, onClose, onChange, autoCreate }) => {
     const [mode, setMode] = useState(autoCreate ? "create" : "read"); // read | create | edit
@@ -115,45 +118,90 @@ const ScheduleModal = ({ date, schedules, empId, onClose, onChange, autoCreate }
                         {daySchedules.length === 0 ? (
                             <p className="text-center text-muted my-4">일정이 비어있어요!</p>
                         ) : (
-                            <ListGroup variant="flush" className="mb-3">
+                            <ListGroup variant="flush" className="mb-3 schedule-list">
                                 {daySchedules.map(s => (
                                     <ListGroup.Item
                                         key={s.id}
                                         className="d-flex justify-content-between align-items-start"
-                                        variant={s.empId === empId ? "light" : "secondary"}
+                                        variant={s.type === "project"
+                                            ? "success"
+                                            : (s.empId === empId ? "light" : "secondary")
+                                        }
                                     >
-                                        <div>
-                                            <div className="fw-bold d-flex align-items-center gap-2">
-                                                <span>{s.title}</span>
-                                                {s.description && (
-                                                    <span
-                                                        style={{ cursor: "pointer" }}
-                                                        title="메모 보기"
-                                                        onClick={() => {
-                                                            setDescContent(s.description);
-                                                            setShowDescModal(true);
-                                                        }}
-                                                    >
-                                                        📝
-                                                    </span>
-                                                )}
-                                            </div>
 
-                                            <div className="small text-muted">
-                                                {formatTime(s.startAt)} ~ {formatTime(s.endAt)}
-                                            </div>
+                                    <div className="schedule-row">
+                                            {/* 왼쪽: 시작 / 종료 시간 */}
+                                        <div className="schedule-time">
+                                            {s.type === "project" ? (
+                                                <div className="text-muted"></div>
+                                            ) : (
+                                                <>
+                                                    <div>{formatTime(s.startAt)}</div>
+                                                    <div>{formatTime(s.endAt)}</div>
+                                                </>
+                                            )}
                                         </div>
 
-                                        {s.empId === empId && (
-                                            <div className="d-flex gap-1">
-                                                <Button size="sm" variant="outline-primary" onClick={() => startEdit(s)}>
-                                                    수정
-                                                </Button>
-                                                <Button size="sm" variant="outline-danger" onClick={() => deleteSchedule(s.id)}>
-                                                    삭제
-                                                </Button>
+                                            {/* 가운데: 초록색 세로 바 */}
+                                            <div className="schedule-bar" />
+
+                                            {/* 오른쪽: 일정 내용 */}
+                                            <div className="schedule-content">
+                                                {/* 제목 + 메모 아이콘 */}
+                                                <div className="fw-bold d-flex align-items-center gap-2">
+                                                    <span>{s.title}</span>
+
+                                                    {s.description && (
+                                                        <span
+                                                            style={{ cursor: "pointer" }}
+                                                            title="메모 보기"
+                                                            onClick={() => {
+                                                                setDescContent(s.description);
+                                                                setShowDescModal(true);
+                                                            }}
+                                                            >
+                                                        <img src="/images/note.png" alt="note" />
+                                                    </span>
+                                                    )}
+                                                </div>
+
+                                                {/* 작성자 */}
+                                                <div className="small text-muted">
+                                                    작성자-{s.empId}
+                                                </div>
                                             </div>
+                                        </div>
+                                        {s.empId === empId && (
+                                            <Dropdown align="end">
+                                                <Dropdown.Toggle
+                                                    variant="light"
+                                                    size="sm"
+                                                    style={{
+                                                        border: "none",
+                                                        background: "transparent",
+                                                        fontSize: "20px",
+                                                        lineHeight: 1,
+                                                    }}
+                                                    as="span"
+                                                    className="more-btn"
+                                                >
+                                                    ⋮
+                                                </Dropdown.Toggle>
+
+                                                <Dropdown.Menu>
+                                                    <Dropdown.Item onClick={() => startEdit(s)}>
+                                                        수정
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item
+                                                        className="text-danger"
+                                                        onClick={() => deleteSchedule(s.id)}
+                                                    >
+                                                        삭제
+                                                    </Dropdown.Item>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
                                         )}
+
                                     </ListGroup.Item>
                                 ))}
                             </ListGroup>

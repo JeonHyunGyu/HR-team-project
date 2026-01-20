@@ -101,13 +101,38 @@ const Calendar = () => {
         setSelectedDate(info.dateStr);
 
         try {
-            const res = await axios.get("/back/schedules");
-            const dayList = res.data.filter(s => {
-                const start = s.startAt.slice(0, 10);
-                const end = s.endAt.slice(0, 10);
-                return start <= info.dateStr && info.dateStr <= end;
-            });
-            setDaySchedules(dayList);
+            const [scheduleRes, projectRes] = await Promise.all([
+                axios.get("/back/schedules"),
+                axios.get("/back/project/all")
+            ]);
+
+            const schedules = scheduleRes.data
+                .filter(s => {
+                    const start = s.startAt.slice(0, 10);
+                    const end = s.endAt.slice(0, 10);
+                    return start <= info.dateStr && info.dateStr <= end;
+                })
+                .map(s => ({
+                    ...s,
+                    type: "schedule"
+                }));
+
+            const projects = projectRes.data
+                .filter(p => {
+                    return p.startDate <= info.dateStr && info.dateStr <= p.endDate;
+                })
+                .map(p => ({
+                    id: `project-${p.id}`,
+                    title: p.name,
+                    startAt: p.startDate + "T00:00",
+                    endAt: p.endDate + "T23:59",
+                    type: "project"
+                }));
+
+            setDaySchedules([
+                ...projects,
+                ...schedules
+            ]);
         } catch (err) {
             console.error(err);
             setDaySchedules([]);
@@ -115,6 +140,7 @@ const Calendar = () => {
 
         setShowModal(true);
     };
+
 
     // 3. 모달을 닫을 때 실행할 함수를 별도로 정의합니다.
     const handleCloseModal = () => {

@@ -19,6 +19,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden; /* 스크롤은 내부에서 관리 */
+    transform: translateX(30px);
 }
 
 .project-modal.edit {

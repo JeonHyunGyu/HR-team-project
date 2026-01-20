@@ -6,6 +6,9 @@ import boot.team.hr.min.invite.dto.InviteDto;
 import boot.team.hr.min.invite.entity.Invite;
 import boot.team.hr.min.invite.repository.InviteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +63,12 @@ public class InviteService {
 
         invite.complete();
     }
-
+    //페이징
+    public Page<InviteDto> findByStatus(String status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return inviteRepository.findByStatus(status, pageable)
+                .map(this::toDto);
+    }
     /**
      * 전체 조회
      */
@@ -112,4 +120,5 @@ public class InviteService {
                     inviteRepository.save(invite);
                 });
     }
+    
 }

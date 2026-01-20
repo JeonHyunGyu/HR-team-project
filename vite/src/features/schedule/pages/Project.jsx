@@ -164,8 +164,12 @@ const Project = () => {
                                         <Card.Header className="d-flex justify-content-between align-items-center">
                                             <strong>{p.name}</strong>
                                             <div className="d-flex gap-2">
-                                                <Badge bg="secondary">{p.methodology}</Badge>
-                                                <Badge bg="secondary">{p.status}</Badge>
+                                                <Badge bg="secondary" className="badge-beige">
+                                                    {p.methodology}
+                                                </Badge>
+                                                <Badge bg="secondary" className="badge-beige">
+                                                    {p.status}
+                                                </Badge>
                                             </div>
                                         </Card.Header>
 

@@ -282,11 +282,12 @@ const MeetingBookingModal = ({ room, booking, onClose, onSuccess }) => {
                                 key={b.id}
                                 className="d-flex justify-content-between align-items-center mb-2"
                             >
-                    <span className="small">
-                        {new Date(b.startTime).toLocaleDateString()}{" "}
-                        {new Date(b.startTime).getHours()}시 ~
-                        {new Date(b.endTime).getHours()}시
-                    </span>
+                            <span className="small">
+                                {new Date(b.startTime).toLocaleDateString()}{" "}
+                                {new Date(b.startTime).getHours()}시 ~
+                                {new Date(b.endTime).getHours()}시
+                            </span>
+                            <span className="small">{b.description}</span>
 
                                 <div className="d-flex gap-1">
                                     <Button

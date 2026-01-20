@@ -57,7 +57,7 @@
     align-items: center;
     justify-content: center;
 
-    z-index: 2000;
+    z-index: 1000;
 }
 
 .modal-content {
@@ -90,4 +90,10 @@
     border-radius: 8px;
     width: 320px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end; /* 👉 오른쪽 정렬 */
+    gap: 8px;
+    margin-top: 12px;
 }
