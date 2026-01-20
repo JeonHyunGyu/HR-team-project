@@ -20,7 +20,7 @@ const Home = () => {
     const navigate = useNavigate();
 
     const { user,logout } = useAuth();
-    console.log(user);
+
 
     const handleLogout = async () => {
         try {

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Builder
+@Setter
 @AllArgsConstructor
 public class Emp {
     @Id
