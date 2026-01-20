@@ -4,7 +4,7 @@ import { Container, Row, Col, Nav, Navbar, Collapse } from "react-bootstrap";
 import {Link, Outlet, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import {useAuth} from "./AuthContext.jsx";
-
+import AccountEditModal from "./components/AccountEditModal.jsx";
 const Home = () => {
 
     const [openInvite,setOpenInvite]=useState(false);
@@ -15,6 +15,8 @@ const Home = () => {
     const [openApproval, setOpenApproval] = useState(false);
     const [openEval, setOpenEval] = useState(false);
     const [openReward, setOpenReward] = useState(false);
+    const [showAccountModal, setShowAccountModal] = useState(false);
+
     const navigate = useNavigate();
 
     const { user,logout } = useAuth();
@@ -38,7 +40,12 @@ const Home = () => {
                         <div className="brand">HR</div>
                     </Navbar.Brand>
                     <Nav className="ms-auto">
-                        <Nav.Link>settings</Nav.Link>
+                        <Nav.Link
+                            style={{ cursor: "pointer" }}
+                            onClick={() => setShowAccountModal(true)}
+                        >
+                            계정
+                        </Nav.Link>
                         <Nav.Link onClick={handleLogout} style={{ cursor: "pointer" }}>Logout</Nav.Link>
                     </Nav>
                 </Container>
@@ -203,13 +210,22 @@ const Home = () => {
 
                         </Nav>
                     </Col>
-
+                    {/*김민영이 수정함
+                    기존 디자인 아래거 쓰세요!
+                        <Col xs={10} className="main-content p-4">
+                            <Outlet />
+                        </Col>
+                    */}
                     {/* 메인 콘텐츠 */}
-                    <Col xs={10} className="main-content p-4">
+                    <Col className="main-content p-0">
                         <Outlet />
                     </Col>
                 </Row>
             </Container>
+            <AccountEditModal
+                show={showAccountModal}
+                onClose={() => setShowAccountModal(false)}
+            />
         </div>
     );
 };
