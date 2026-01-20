@@ -69,7 +69,7 @@ public class DeptService {
         deptRepository.save(dept);
     }
     @Transactional
-    public void updateDept(DeptDto deptDto, String tempLoginEmpId) { // String tempLoginEmpId 로직 추가해야함. 지금은 admin1 고정(1월15일)
+    public void updateDept(DeptDto deptDto, String loggedEmpId) { // String tempLoginEmpId 로직 추가해야함. 지금은 admin1 고정(1월15일)
         // 1. 기존 데이터 및 변경자 조회
         Dept dept = deptRepository.findById(deptDto.getDeptNo())
                 .orElseThrow(() -> new RuntimeException("해당 부서 없음"));
@@ -81,7 +81,7 @@ public class DeptService {
                     .orElseThrow(() -> new RuntimeException("해당 상위부서 없음"));
         }
         // 변경자(로그인 사원) 정보 조회
-        Emp changer = empRepository.findById(tempLoginEmpId)
+        Emp changer = empRepository.findById(loggedEmpId)
                 .orElseThrow(() -> new RuntimeException("변경자 정보가 없습니다."));
 
         // 2. 변경 이력 감지 및 리스트 생성

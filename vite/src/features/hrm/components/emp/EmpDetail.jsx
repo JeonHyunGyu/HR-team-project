@@ -218,20 +218,35 @@ const EmpDetail = ({ selectedEmp, onSuccess }) => {
                     <div className="table-responsive border rounded">
                         <table className="table table-hover mb-0" style={{ fontSize: "13px" }}>
                             <thead className="table-light">
-                            <tr><th>변경일시</th><th>항목</th><th>변경 상세</th></tr>
+                            <tr>
+                                <th style={{ width: '150px' }}>변경일시</th>
+                                <th style={{ width: '100px' }}>변경자</th> {/* 변경자 컬럼 추가 */}
+                                <th style={{ width: '100px' }}>항목</th>
+                                <th>변경 상세</th>
+                            </tr>
                             </thead>
                             <tbody>
                             {history.map(h => (
                                 <tr key={h.empHistoryId}>
                                     <td style={{ whiteSpace: 'nowrap' }}>{h.createdAt}</td>
+                                    {/* 변경자 이름 출력 */}
+                                    <td className="fw-bold text-dark">{h.changerName}</td>
                                     <td className="fw-bold text-secondary">{h.fieldName}</td>
                                     <td>
-                                        <span className="text-muted text-decoration-line-through me-2">{h.beforeValue || "없음"}</span>
-                                        <span className="text-primary fw-bold">→ {h.afterValue}</span>
+                            <span className="text-muted text-decoration-line-through me-2">
+                                {h.beforeValue || "없음"}
+                            </span>
+                                        <span className="text-primary fw-bold">
+                                → {h.afterValue}
+                            </span>
                                     </td>
                                 </tr>
                             ))}
-                            {history.length === 0 && <tr><td colSpan="3" className="text-center py-5">변경 이력이 없습니다.</td></tr>}
+                            {history.length === 0 && (
+                                <tr>
+                                    <td colSpan="4" className="text-center py-5">변경 이력이 없습니다.</td>
+                                </tr>
+                            )}
                             </tbody>
                         </table>
                     </div>

@@ -15,6 +15,6 @@ public class OutsourcingAssignmentHistoryDto {
     private String fieldName;
     private String beforeValue;
     private String afterValue;
-    private String changerId;
+    private String changerName;
     private LocalDateTime createdAt;
 }

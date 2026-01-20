@@ -47,10 +47,10 @@ public class OutsourcingService {
 
     // [수정된 부분] 업체 수정 시 이력 저장 스타일 적용
     @Transactional
-    public void updateOutsourcingCompany(OutsourcingCompanyDto dto, String tempLoginEmpId){
+    public void updateOutsourcingCompany(OutsourcingCompanyDto dto, String loggedEmpId){
         OutsourcingCompany company = outsourcingCompanyRepository.findById(dto.getCompanyId())
                 .orElseThrow(()->new RuntimeException("해당하는 파견업체가 없습니다."));
-        Emp changer = empRepository.findById(tempLoginEmpId)
+        Emp changer = empRepository.findById(loggedEmpId)
                 .orElseThrow(() -> new RuntimeException("변경자 정보가 없습니다."));
 
         List<OutsourcingCompanyHistory> histories = new ArrayList<>();
@@ -110,10 +110,10 @@ public class OutsourcingService {
 
     // [수정된 부분] 배치 정보 수정 시 이력 저장 스타일 적용
     @Transactional
-    public void updateOutsourcingAssignment(OutsourcingAssignmentDto dto, String tempLoginEmpId){
+    public void updateOutsourcingAssignment(OutsourcingAssignmentDto dto, String loggedEmpId){
         OutsourcingAssignment assign = outsourcingAssignmentRepository.findById(dto.getAssignmentId())
                 .orElseThrow(()->new RuntimeException("해당하는 파견 배치정보가 없습니다."));
-        Emp changer = empRepository.findById(tempLoginEmpId)
+        Emp changer = empRepository.findById(loggedEmpId)
                 .orElseThrow(() -> new RuntimeException("변경자 정보가 없습니다."));
 
         List<OutsourcingAssignmentHistory> histories = new ArrayList<>();
@@ -167,7 +167,7 @@ public class OutsourcingService {
                     .fieldName(h.getFieldName())
                     .beforeValue(h.getBeforeValue())
                     .afterValue(h.getAfterValue())
-                    .changerId(h.getChanger().getEmpId())
+                    .changerName(h.getChanger().getEmpName())
                     .createdAt(h.getCreatedAt())
                     .build());
         }
@@ -184,7 +184,7 @@ public class OutsourcingService {
                     .fieldName(h.getFieldName())
                     .beforeValue(h.getBeforeValue())
                     .afterValue(h.getAfterValue())
-                    .changerId(h.getChanger().getEmpId())
+                    .changerName(h.getChanger().getEmpName())
                     .createdAt(h.getCreatedAt())
                     .build());
         }

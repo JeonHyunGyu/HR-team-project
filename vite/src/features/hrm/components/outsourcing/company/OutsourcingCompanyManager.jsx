@@ -139,7 +139,7 @@ const OutsourcingCompanyManager = () => {
                                                     </td>
                                                     <td>
                                                             <span className="badge rounded-pill bg-light text-dark border fw-normal">
-                                                                <i className="bi bi-person me-1"></i>{h.changerId}
+                                                                <i className="bi bi-person me-1"></i>{h.changerName}
                                                             </span>
                                                     </td>
                                                 </tr>

@@ -269,23 +269,46 @@ const OutsourcingAssignmentManager = () => {
                                             </div>
                                         )}
 
-                                        {/* ⭐ 이력 상세 보기 영역 추가 ⭐ */}
+                                        {/* ⭐ 이력 상세 보기 영역 수정 ⭐ */}
                                         {historyViewId === m.assignmentId && (
-                                            <div className="mt-2 p-2 bg-light border-start border-4 border-info rounded shadow-sm">
-                                                <div className="fw-bold x-small mb-2 text-info">최근 변경 이력</div>
+                                            <div className="mt-2 p-3 bg-light border-start border-4 border-info rounded shadow-sm">
+                                                <div className="d-flex justify-content-between align-items-center mb-2">
+            <span className="fw-bold x-small text-info">
+                <i className="bi bi-clock-history me-1"></i>최근 변경 이력
+            </span>
+                                                    <span className="text-muted" style={{fontSize: '0.65rem'}}>최신순</span>
+                                                </div>
+
                                                 {assignHistory.length > 0 ? (
-                                                    assignHistory.map((h, idx) => (
-                                                        <div key={idx} className="bg-white border p-1 rounded mb-1 shadow-xs" style={{fontSize: '0.7rem'}}>
-                                                            <div className="d-flex justify-content-between text-muted">
-                                                                <span>{h.fieldName || "상태"} 변경</span>
-                                                                <span>{h.createdAt?.split('T')[0]}</span>
+                                                    <div className="d-flex flex-column gap-2">
+                                                        {assignHistory.map((h, idx) => (
+                                                            <div key={idx} className="bg-white border p-2 rounded shadow-sm" style={{fontSize: '0.72rem'}}>
+                                                                <div className="d-flex justify-content-between mb-1">
+                            <span className="badge bg-secondary-subtle text-secondary" style={{fontSize: '0.6rem'}}>
+                                {h.fieldName || "상태"}
+                            </span>
+                                                                    <span className="text-muted" style={{fontSize: '0.65rem'}}>
+                                {h.createdAt?.split('T')[0]} {h.createdAt?.split('T')[1]?.substring(0, 5)}
+                            </span>
+                                                                </div>
+                                                                <div className="d-flex align-items-center flex-wrap gap-1 mb-1">
+                                                                    <span className="text-muted text-decoration-line-through">{h.beforeValue || "최초"}</span>
+                                                                    <i className="bi bi-arrow-right text-primary"></i>
+                                                                    <span className="fw-bold text-primary">{h.afterValue}</span>
+                                                                </div>
+                                                                {/* 변경자 정보 추가 */}
+                                                                <div className="text-end border-top pt-1 mt-1" style={{fontSize: '0.65rem'}}>
+                                                                    <span className="text-muted text-secondary">수정자: </span>
+                                                                    <span className="fw-bold text-dark">{h.changerName}</span>
+                                                                </div>
                                                             </div>
-                                                            <div className="text-dark">
-                                                                <span className="text-muted">{h.beforeValue || "최초"}</span> → <strong>{h.afterValue}</strong>
-                                                            </div>
-                                                        </div>
-                                                    ))
-                                                ) : <div className="x-small text-muted p-2">기록된 이력이 없습니다.</div>}
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="x-small text-muted p-3 text-center bg-white border rounded">
+                                                        기록된 이력이 없습니다.
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </div>

@@ -63,7 +63,7 @@ public class EmpService {
     }
 
     @Transactional
-    public void updateEmp(EmpDto empDto, String tempLoginEmpId) {
+    public void updateEmp(EmpDto empDto, String loggedEmpId) {
         Emp emp = empRepository.findById(empDto.getEmpId())
                 .orElseThrow(() -> new RuntimeException("해당 사원 없음"));
         Dept dept = deptRepository.findById(empDto.getDeptNo())
@@ -73,7 +73,7 @@ public class EmpService {
 
 
         // 사원의 정보를 수정한 관리자(사원)
-        Emp changer = empRepository.findById(tempLoginEmpId)
+        Emp changer = empRepository.findById(loggedEmpId)
                 .orElseThrow(() -> new RuntimeException("변경자 정보가 없습니다."));
         // 변경 이력을 저장할 배열
         List<EmpHistory> histories = new ArrayList<>();
@@ -152,6 +152,7 @@ public class EmpService {
                     .empId(history.getEmpId())
                     .changeType(history.getChangeType())
                     .fieldName(history.getFieldName())
+                    .changerName(history.getChanger().getEmpName())
                     .beforeValue(history.getBeforeValue())
                     .afterValue(history.getAfterValue())
                     .createdAt(history.getCreatedAt())

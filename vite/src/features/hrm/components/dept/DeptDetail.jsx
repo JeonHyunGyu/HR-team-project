@@ -251,7 +251,7 @@ const DeptDetail = ({ selectedDept, onSuccess }) => {
                                         <i className="bi bi-arrow-right text-primary me-2"></i>
                                         <span className="text-primary fw-bold">{h.afterValue}</span>
                                     </td>
-                                    <td>{h.changerId}</td>
+                                    <td>{h.changerName}</td>
                                 </tr>
                             ))}
                             {history.length === 0 && (

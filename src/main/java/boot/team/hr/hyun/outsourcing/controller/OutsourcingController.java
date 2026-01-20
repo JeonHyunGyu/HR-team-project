@@ -2,7 +2,9 @@ package boot.team.hr.hyun.outsourcing.controller;
 
 import boot.team.hr.hyun.outsourcing.dto.*;
 import boot.team.hr.hyun.outsourcing.service.OutsourcingService;
+import boot.team.hr.min.account.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +28,20 @@ public class OutsourcingController {
     }
 
     @PutMapping("/updateCompany")
-    public void updateOutsourcingCompany(@RequestBody OutsourcingCompanyDto outsourcingCompanyDto){
+    public void updateOutsourcingCompany(@RequestBody OutsourcingCompanyDto outsourcingCompanyDto, @AuthenticationPrincipal CustomUserDetails user){
+        if (user == null) {
+            // 이 에러가 발생한다면 프론트에서 로그인이 풀렸거나 시큐리티 설정 문제임
+            throw new RuntimeException("로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+        }
+
         // 실제 운영 시에는 SecurityContextHolder에서 추출
-        String tempLoginEmpId = "admin1";
-        outsourcingService.updateOutsourcingCompany(outsourcingCompanyDto, tempLoginEmpId);
+        String loggedEmpId = user.getEmpId();
+
+        // 만약 ADMIN이라서 getEmpId()가 null인 경우를 위한 처리
+        if (loggedEmpId == null) {
+            loggedEmpId = "ADMIN_SYSTEM"; // 관리자 계정용 고유 ID 혹은 예외 처리
+        }
+        outsourcingService.updateOutsourcingCompany(outsourcingCompanyDto, loggedEmpId);
     }
 
     @DeleteMapping("/deleteCompany")
@@ -57,10 +69,10 @@ public class OutsourcingController {
     }
 
     @PutMapping("/updateAssignment")
-    public void updateOutsourcingAssignment(@RequestBody OutsourcingAssignmentDto outsourcingAssignmentDto){
+    public void updateOutsourcingAssignment(@RequestBody OutsourcingAssignmentDto outsourcingAssignmentDto, @AuthenticationPrincipal CustomUserDetails user){
         // 실제 운영 시에는 SecurityContextHolder에서 추출
-        String tempLoginEmpId = "admin1";
-        outsourcingService.updateOutsourcingAssignment(outsourcingAssignmentDto, tempLoginEmpId);
+        String loggedEmpId = user.getEmpId();
+        outsourcingService.updateOutsourcingAssignment(outsourcingAssignmentDto, loggedEmpId);
     }
 
     @DeleteMapping("/deleteAssignment/{assignmentId}")
