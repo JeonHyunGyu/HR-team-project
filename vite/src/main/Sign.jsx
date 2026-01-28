@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Card, Button, Form } from "react-bootstrap";
 import "./styles/login.css";
 
 const Sign = () => {
@@ -10,28 +9,25 @@ const Sign = () => {
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
 
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
-    // 이메일 정규식 (실무에서 가장 흔함)
-    const emailRegex =
-        /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    const handleSignUp = async (e) => {
+        e.preventDefault();
 
-
-
-    const handleSignUp = async () => {
         if (!email || !password) {
             alert("이메일과 비밀번호를 입력하세요");
             return;
         }
+
         let valid = true;
 
-        // 이메일 검증
         if (!emailRegex.test(email)) {
             setEmailError("올바른 이메일 형식이 아닙니다.");
             valid = false;
         } else {
             setEmailError("");
         }
-        // 비밀번호 검증
+
         if (password.length < 8) {
             setPasswordError("비밀번호는 최소 8자 이상이어야 합니다.");
             valid = false;
@@ -40,6 +36,7 @@ const Sign = () => {
         }
 
         if (!valid) return;
+
         try {
             const res = await fetch("/back/signup/admin", {
                 method: "POST",
@@ -57,51 +54,112 @@ const Sign = () => {
     };
 
     return (
-        <Container fluid className="login-wrapper">
-            <Card className="login-card">
-
-                <div className="top-btn-group">
-                    <button onClick={() => navigate("/")}>로그인</button>
-                    <button onClick={() => navigate("/sign")}>관리자 가입</button>
-                    <button onClick={() => navigate("/empsign")}>사원 가입</button>
+        <div className="login-page">
+            {/* 왼쪽 브랜딩 영역 */}
+            <div className="login-branding">
+                <div className="branding-content">
+                    <div className="brand-logo">
+                        <span className="logo-icon">H</span>
+                        <span className="logo-text">WorkFlow</span>
+                    </div>
+                    <h1 className="branding-title">
+                        스마트한 인사관리의 시작
+                    </h1>
+                    <p className="branding-desc">
+                        인사, 급여, 근태, 평가까지<br />
+                        하나의 플랫폼에서 효율적으로 관리하세요.
+                    </p>
+                    <div className="branding-features">
+                        <div className="feature-item">
+                            <span className="feature-icon">&#10003;</span>
+                            <span>통합 인사정보 관리</span>
+                        </div>
+                        <div className="feature-item">
+                            <span className="feature-icon">&#10003;</span>
+                            <span>자동화된 급여 계산</span>
+                        </div>
+                        <div className="feature-item">
+                            <span className="feature-icon">&#10003;</span>
+                            <span>실시간 근태 현황</span>
+                        </div>
+                        <div className="feature-item">
+                            <span className="feature-icon">&#10003;</span>
+                            <span>체계적인 성과 평가</span>
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                <Card.Body>
-                    <h4 className="login-title">관리자 회원가입</h4>
+            {/* 오른쪽 폼 영역 */}
+            <div className="login-form-area">
+                <div className="login-form-container">
+                    {/* 탭 네비게이션 */}
+                    <div className="login-tabs">
+                        <button
+                            className="tab-btn"
+                            onClick={() => navigate("/")}
+                        >
+                            로그인
+                        </button>
+                        <button
+                            className="tab-btn active"
+                            onClick={() => navigate("/sign")}
+                        >
+                            관리자 가입
+                        </button>
+                        <button
+                            className="tab-btn"
+                            onClick={() => navigate("/empsign")}
+                        >
+                            사원 가입
+                        </button>
+                    </div>
 
-                    <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Control
-                                type="email"
-                                placeholder="Email"
-                                value={email}
-                                isInvalid={!!emailError}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {emailError}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Control
-                                type="password"
-                                placeholder="Password"
-                                value={password}
-                                isInvalid={!!passwordError}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {passwordError}
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                    {/* 가입 폼 */}
+                    <div className="login-form-content">
+                        <h2 className="form-title">관리자 회원가입</h2>
+                        <p className="form-subtitle">관리자 계정을 생성하여 시스템을 관리하세요</p>
 
-                        <Button className="login-btn w-100" onClick={handleSignUp}>
-                            관리자 회원가입
-                        </Button>
-                    </Form>
-                </Card.Body>
-            </Card>
-        </Container>
+                        <form onSubmit={handleSignUp}>
+                            <div className="form-group">
+                                <label className="form-label">이메일</label>
+                                <input
+                                    type="email"
+                                    className={`form-input ${emailError ? 'input-error' : ''}`}
+                                    placeholder="admin@company.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                                {emailError && <span className="error-message">{emailError}</span>}
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">비밀번호</label>
+                                <input
+                                    type="password"
+                                    className={`form-input ${passwordError ? 'input-error' : ''}`}
+                                    placeholder="8자 이상 입력하세요"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                                {passwordError && <span className="error-message">{passwordError}</span>}
+                            </div>
+
+                            <button type="submit" className="login-submit-btn">
+                                관리자 계정 생성
+                            </button>
+                        </form>
+                    </div>
+
+                    {/* 푸터 */}
+                    <div className="login-footer">
+                        <p>&copy; 2025 WorkFlow. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
 

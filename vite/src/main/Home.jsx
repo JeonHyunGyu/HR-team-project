@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/home.css";
-import { Container, Row, Col, Nav, Navbar, Collapse } from "react-bootstrap";
+import { Nav, Collapse } from "react-bootstrap";
 import {Link, Outlet, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import {useAuth} from "./AuthContext.jsx";
@@ -33,28 +33,41 @@ const Home = () => {
 
     return (
         <div className="admin-page">
-            {/* 상단 Navbar */}
-            <Navbar className="custom-navbar">
-                <Container>
-                          <Navbar.Brand>
-                        <div className="brand">HR</div>
-                    </Navbar.Brand>
-                    <Nav className="ms-auto">
-                        <Nav.Link
-                            style={{ cursor: "pointer" }}
+            {/* 상단 헤더 */}
+            <header className="custom-navbar">
+                <div className="navbar-brand-area">
+                    <div className="brand-logo">
+                        <span className="logo-icon">H</span>
+                        <span className="logo-text">WorkFlow</span>
+                    </div>
+                </div>
+                <div className="navbar-user-area">
+                    <div className="user-info-display">
+                        <span className="user-greeting">안녕하세요,</span>
+                        <span className="user-name">{user?.name || '사용자'}님</span>
+                    </div>
+                    <div className="user-actions">
+                        <button
+                            className="nav-action-btn"
                             onClick={() => setShowAccountModal(true)}
                         >
-                            계정
-                        </Nav.Link>
-                        <Nav.Link onClick={handleLogout} style={{ cursor: "pointer" }}>Logout</Nav.Link>
-                    </Nav>
-                </Container>
-            </Navbar>
+                            <span className="action-icon">&#9881;</span>
+                            <span className="action-text">계정설정</span>
+                        </button>
+                        <button
+                            className="nav-action-btn logout-btn"
+                            onClick={handleLogout}
+                        >
+                            <span className="action-icon">&#10148;</span>
+                            <span className="action-text">로그아웃</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
 
-            <Container fluid>
-                <Row>
-                    {/* 좌측 메뉴 */}
-                    <Col xs={2} className="vertical-navbar p-3">
+            <div className="main-layout">
+                {/* 좌측 메뉴 */}
+                <aside className="vertical-navbar">
                         <Nav className="flex-column">
 
                             {/* 홈 */}
@@ -206,14 +219,13 @@ const Home = () => {
                             </Collapse>
 
                         </Nav>
-                    </Col>
+                </aside>
 
-                    {/* 메인 콘텐츠 */}
-                    <Col className="main-content p-0">
-                        <Outlet />
-                    </Col>
-                </Row>
-            </Container>
+                {/* 메인 콘텐츠 */}
+                <main className="main-content">
+                    <Outlet />
+                </main>
+            </div>
             <AccountEditModal
                 show={showAccountModal}
                 onClose={() => setShowAccountModal(false)}
